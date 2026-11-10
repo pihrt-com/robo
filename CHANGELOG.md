@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.3 - 2026-11-10
+
+### Fixed
+
+- `GitHub/robo`: po dokončení aktualizace se auditní událost zapisuje se správným ID aktivního ročníku a pojmenovanými argumenty, takže nemůže dojít k záměně typu události a ID ročníku.
+
 ## 0.2.2 - 2026-11-10
 
 ### Fixed

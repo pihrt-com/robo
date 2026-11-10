@@ -31,7 +31,7 @@ Záhlaví ukazuje skutečný počet týmů a počet rozpracovaných kontrol nebo
 
 Aktualizace v nabídce Systém ověří nejnovější veřejné vydání `pihrt-com/robo`. Instalace aktualizace přijme jen asset `robo-update.zip` se souborem `VERSION`, jehož verze odpovídá tagu, a se SHA-256 zveřejněným GitHubem. Aktualizátor kontroluje HTTPS, podpis otisku souboru, cesty v ZIPu a před zápisem uchová obnovení změněných souborů. `config/local.php` se nikdy nenahrazuje.
 
-Pokud systém používá verzi 0.2.1, první oprava aktualizátoru vyžaduje ruční nahrání souboru `app/Update/UpdateService.php` z release 0.2.2. Potom lze další vydání instalovat obvyklým postupem z nabídky Systém.
+Pokud systém používá verzi 0.2.1, první oprava aktualizátoru vyžaduje ruční nahrání souboru `app/Update/UpdateService.php` z release 0.2.2. Pokud po této aktualizaci vznikla chyba auditu s nesprávným typem `competitionId`, nahrajte navíc soubor `index.php` z release 0.2.3. Potom lze další vydání instalovat obvyklým postupem z nabídky Systém.
 
 Export pro Playoff obsahuje list `Pojmenování týmů` a přesně sloupce `ID týmu`, `Škola / adresa školy`, `Jméno soutěžícího` a `Nejlepší čas jízdy`. Stávající Playoff tento seznam načte, ale automatické nasazení 24 týmů do pavouka bude vyžadovat navazující změnu v projektu Playoff.
 

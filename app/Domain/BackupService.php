@@ -12,8 +12,8 @@ final class BackupService
     private const MAX_ARCHIVE_BYTES = 209715200;
     private const MAX_EXTRACTED_BYTES = 524288000;
     private const TABLES = ['app_settings', 'competitions', 'roles', 'users', 'teams', 'page_texts', 'penalties', 'technical_inspections', 'rides', 'judging_categories', 'judging_criteria', 'judging_scores', 'playoff_matches', 'login_rate_limits', 'audit_log'];
-    private const ROOT_FILES = ['.gitattributes', '.gitignore', '.htaccess', 'CHANGELOG.md', 'README.md', 'VERSION', 'cache-refresh.php', 'cache-repair.php', 'index.php', 'install.php'];
-    private const DIRECTORIES = ['app', 'config', 'design', 'migrations', 'public', 'tests', 'views'];
+    private const ROOT_FILES = ['.gitattributes', '.gitignore', '.htaccess', 'CHANGELOG.md', 'README.md', 'VERSION', 'cache-refresh.php', 'cache-repair.php', 'index.php', 'install.php', 'navigation-v043.php', 'teams-import-v044.php', 'teams-save-v044.php'];
+    private const DIRECTORIES = ['app', 'config', 'migrations', 'public', 'tests', 'views'];
 
     public function __construct(private readonly PDO $pdo)
     {

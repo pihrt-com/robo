@@ -22,9 +22,10 @@ button { border-radius: var(--radius); font-weight: 800; cursor: pointer; }
 
 .app-shell { min-height: 100vh; background: var(--page); }
 .app-header { position: sticky; top: 0; z-index: 20; background: var(--header); border-bottom: 1px dashed var(--ink); box-shadow: 0 2px 0 rgba(0,0,0,.1); }
-.meta-row { display: grid; grid-template-columns: auto minmax(110px,1fr) minmax(160px,1.4fr) minmax(160px,1.4fr) auto auto; align-items: center; gap: .5rem; min-height: 34px; padding: .28rem max(1rem, calc((100vw - 1600px) / 2)); font-size: .78rem; }
-.meta-row-static { grid-template-columns: auto 1fr auto auto; }
+.meta-row { display: grid; grid-template-columns: auto minmax(110px,1fr) minmax(160px,1.4fr) minmax(160px,1.4fr) auto auto auto; align-items: center; gap: .5rem; min-height: 34px; padding: .28rem max(1rem, calc((100vw - 1600px) / 2)); font-size: .78rem; }
+.meta-row-static { grid-template-columns: auto 1fr auto auto auto; }
 .current-clock { display: inline-flex; gap: .5rem; }
+[data-current-date], [data-current-time] { font-size: 1.3rem; }
 .brand-row { display: grid; grid-template-columns: max-content minmax(0, 1fr) max-content; align-items: center; column-gap: .75rem; min-height: 54px; padding: 0 max(1rem, calc((100vw - 1600px) / 2)); }
 .brand { color: var(--orange); font-weight: 800; font-size: 1.3rem; text-decoration: none; }
 .page-title { min-width: 0; overflow: hidden; color: var(--orange); font-size: clamp(1.05rem, 2.15vw, 1.45rem); font-weight: 800; text-align: center; text-overflow: ellipsis; white-space: nowrap; margin: 0; }
@@ -99,9 +100,9 @@ button { border-radius: var(--radius); font-weight: 800; cursor: pointer; }
 .admin-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(420px, .9fr); align-items: start; gap: 1.35rem 2.25rem; }
 .admin-grid > .notice { grid-column: 1 / -1; }
 .admin-grid > div { min-width: 0; }
-.settings-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .35rem .8rem; padding: .15rem 0 .65rem; }
-.settings-link { color: var(--ink); font-size: clamp(1rem, 1.7vw, 1.2rem); font-weight: 800; text-decoration: none; }
-.settings-link:hover { color: var(--orange); text-decoration: underline; }
+.settings-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; padding: .15rem 0 1.1rem; }
+.settings-link { display: flex; align-items: center; justify-content: center; min-height: 4.2rem; padding: .75rem 1rem; color: var(--ink); background: #eff3e8; border: var(--line); border-radius: var(--radius); box-shadow: 0 2px 0 rgba(0,0,0,.18); font-size: clamp(.95rem, 1.6vw, 1.15rem); font-weight: 800; text-align: center; text-decoration: none; }
+.settings-link:hover, .settings-link:focus-visible { color: var(--white); background: var(--green); }
 .action-card { margin-bottom: 1.25rem; padding: 1rem; border: var(--line); background: rgba(255,255,255,.22); }
 .action-card h2 { margin: 0 0 .35rem; color: #9c9c9c; font-size: 1.15rem; }
 .action-list { max-height: 180px; overflow: auto; background: var(--white); border: var(--line); }
@@ -119,6 +120,16 @@ button { border-radius: var(--radius); font-weight: 800; cursor: pointer; }
 .user-row-form { display: grid; grid-template-columns: minmax(150px,1.2fr) minmax(150px,1fr) minmax(135px,.7fr) minmax(190px,1.2fr) auto; align-items: center; gap: .5rem; }
 .user-row-form input, .user-row-form select { width: 100%; min-height: 2.35rem; padding: .35rem .5rem; border: var(--line); border-radius: var(--radius); background: var(--white); }
 .row-actions { display: flex; gap: .35rem; }
+.teams-table { table-layout: fixed; }
+.teams-table .teams-col-number { width: 7%; }
+.teams-table .teams-col-school { width: 42%; }
+.teams-table .teams-col-contestants { width: 39%; }
+.teams-table .teams-col-actions { width: 12%; }
+.teams-table input[name="school_name"], .teams-table input[name="contestant_names"] { width: 96%; min-height: 2rem; padding: .25rem .4rem; }
+.team-number-static { font-size: 1.05rem; font-weight: 800; }
+.team-actions { white-space: nowrap; }
+.next-team-hint { margin-top: -.35rem; color: #555; }
+.import-check-button { justify-self: center; width: auto; min-width: 13rem; }
 .switch-control { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 2.35rem; cursor: pointer; font-weight: 800; }
 .switch-control input { position: absolute; opacity: 0; pointer-events: none; }
 .switch-track { position: relative; width: 3.1rem; height: 1.65rem; border: 2px solid var(--ink); border-radius: 999px; background: #aeb4bd; transition: background .15s ease; }

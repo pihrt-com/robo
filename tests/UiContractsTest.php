@@ -36,7 +36,10 @@ final class UiContractsTest
         self::assert(str_contains($javascript, 'if (field === "is_confirmed")'), 'A regular checkpoint response must not restore missing placeholders.');
         self::assert(str_contains($javascript, 'fetch("/robo/navigation-v043.php"'), 'Stale authenticated layouts must repair navigation through the new endpoint.');
         self::assert(str_contains($javascript, 'navigation.dataset.navigationRepair = "0.4.3"'), 'Repaired navigation must expose its client-side version marker.');
+        self::assert(str_contains($javascript, 'existingSignedUser.textContent.trim() === ""'), 'An empty user label in a stale layout must be filled from the navigation endpoint.');
+        self::assert(str_contains($javascript, 'repairSystemHome();'), 'The cached system home must receive the redesigned settings buttons.');
         self::assert(str_contains($stylesheet, '.best-time .team-button { color: var(--white); }'), 'The best-time button text must remain white.');
+        self::assert(str_contains($stylesheet, '.settings-link { display: flex;'), 'System settings links must be presented as buttons.');
 
         $standings = self::render('standings', ['rows' => [[
             'team_id' => 3, 'number' => 6, 'school' => 'Škola', 'members' => 'Jméno', 'checkpoint_1' => 6, 'furthest_checkpoint' => 'checkpoint_1', 'best_time' => 1000, 'did_not_stop' => 0, 'technical_penalty' => 0, 'total_time' => 1000, 'rank' => 1,
@@ -45,6 +48,20 @@ final class UiContractsTest
         self::assert(str_contains($standings, 'class="progress-mark">6x</td>'), 'Standings checkpoint counts must include the x suffix.');
         self::assert(str_contains($standings, 'class="form-actions standings-actions"'), 'Standings export actions must keep spacing above the table.');
         self::assert(!str_contains($standings, 'class="best-time">1000</td>'), 'Standings total time must not use the green highlight.');
+
+        $teams = self::render('teams', ['teams' => [[
+            'id'=>1,'team_number'=>1,'school_name'=>'Škola','contestant_names'=>'Jan, Eva',
+        ]], 'base'=>'/robo']);
+        self::assert(str_contains($teams, '<td class="team-number-static">1</td>'), 'Existing team numbers must be read-only.');
+        self::assert(!str_contains($teams, 'name="team_number" type="number"'), 'Team numbers must not be editable number inputs.');
+        self::assert(str_contains($teams, '/teams-save-v044.php'), 'Team changes must use the versioned endpoint.');
+        self::assert(str_contains($teams, '/teams-import-v044.php'), 'Team import must use the versioned endpoint.');
+
+        $admin = self::render('admin', ['settingsLinks'=>[
+            ['href'=>'/robo/system/competition','label'=>'Ročník soutěže a jazyk'],
+        ], 'blocks'=>[], 'backups'=>[], 'base'=>'/robo']);
+        self::assert(str_contains($admin, 'class="settings-link"'), 'System administration links must use button styling.');
+        self::assert(!str_contains($admin, 'Nastavení —'), 'System administration labels must omit the repeated settings prefix.');
     }
 
     private static function render(string $viewName, array $variables): string

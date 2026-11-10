@@ -27,8 +27,13 @@
     const header = document.querySelector(".app-header");
     if (!header) return;
     const existingNavigation = header.querySelector(".nav-row");
-    const needsUser = !header.querySelector(".signed-user");
+    const existingSignedUser = header.querySelector(".signed-user");
+    const needsUser = !existingSignedUser || existingSignedUser.textContent.trim() === "";
     const needsNavigation = !existingNavigation || existingNavigation.children.length === 0;
+    const meta = header.querySelector(".meta-row");
+    const logout = meta?.querySelector('form[action$="/logout"]');
+    const helpButton = header.querySelector("[data-help-modal='page-help']");
+    if (meta && logout && helpButton && helpButton.parentElement !== meta) logout.insertAdjacentElement("afterend", helpButton);
     if (!needsUser && !needsNavigation) return;
     try {
       const response = await fetch("/robo/navigation-v043.php", {
@@ -43,17 +48,15 @@
       if (!response.ok) throw new Error("Navigation endpoint failed");
       const payload = await response.json();
       if (needsUser) {
-        const meta = header.querySelector(".meta-row");
-        const logout = meta?.querySelector('form[action$="/logout"]');
         if (meta && logout) {
-          const signedUser = document.createElement("span");
+          const signedUser = existingSignedUser || document.createElement("span");
           signedUser.className = "signed-user";
           const username = document.createElement("strong");
           username.textContent = String(payload.username || "");
           const role = document.createElement("small");
           role.textContent = String(payload.role || "");
-          signedUser.append(username, role);
-          meta.insertBefore(signedUser, logout);
+          signedUser.replaceChildren(username, role);
+          if (!existingSignedUser) meta.insertBefore(signedUser, logout);
         }
       }
       if (needsNavigation && Array.isArray(payload.navigation)) {
@@ -84,6 +87,91 @@
       }
       console.error("ROBO navigation repair failed", error);
     }
+  }
+
+  function repairTeamsPage() {
+    if (!window.location.pathname.replace(/\/$/, "").endsWith("/system/teams")) return;
+    const table = document.querySelector(".data-table");
+    if (table) {
+      table.classList.add("teams-table");
+      const rows = [...table.querySelectorAll("tbody tr")];
+      let highestNumber = 0;
+      rows.forEach((row) => {
+        const numberInput = row.querySelector('input[name="team_number"]');
+        const form = row.querySelector("form") || numberInput?.form;
+        if (!form || !numberInput) return;
+        const number = Number(numberInput.value || 0);
+        highestNumber = Math.max(highestNumber, number);
+        form.action = "/robo/teams-save-v044.php";
+        numberInput.type = "hidden";
+        const existingStatic = row.querySelector(".team-number-static");
+        const cell = existingStatic || numberInput.closest("td");
+        if (cell && !existingStatic) {
+          cell.classList.add("team-number-static");
+          if (!cell.querySelector("[data-static-team-number]")) {
+            const value = document.createElement("span");
+            value.dataset.staticTeamNumber = "";
+            value.textContent = String(number);
+            cell.prepend(value);
+          }
+        }
+        row.lastElementChild?.classList.add("team-actions");
+      });
+
+      const headers = table.querySelectorAll("thead th");
+      if (headers.length >= 4) {
+        headers[0].style.width = "7%";
+        headers[1].style.width = "42%";
+        headers[2].style.width = "39%";
+        headers[3].style.width = "12%";
+      }
+
+      const addForm = [...document.querySelectorAll('form[action$="/system/teams"]')].find((form) => !form.querySelector('input[name="team_id"]'));
+      if (addForm) {
+        addForm.action = "/robo/teams-save-v044.php";
+        addForm.classList.add("teams-add-form");
+        const numberInput = addForm.querySelector('input[name="team_number"]');
+        if (numberInput) {
+          const numberLabel = numberInput.closest("label");
+          numberInput.type = "hidden";
+          numberInput.value = String(highestNumber + 1);
+          addForm.prepend(numberInput);
+          numberLabel?.remove();
+        }
+        if (!addForm.previousElementSibling?.classList.contains("next-team-hint")) {
+          const hint = document.createElement("p");
+          hint.className = "next-team-hint";
+          hint.textContent = `Novému týmu bude automaticky přiděleno číslo ${highestNumber + 1}.`;
+          addForm.before(hint);
+        }
+      }
+    }
+
+    const importForm = document.querySelector('form[action$="/system/teams/import-preview"], form.import-form');
+    if (importForm) {
+      importForm.action = "/robo/teams-import-v044.php";
+      importForm.classList.add("import-form");
+      importForm.querySelector('button[type="submit"]')?.classList.add("import-check-button");
+    }
+  }
+
+  function repairSystemHome() {
+    if (window.location.pathname.replace(/\/$/, "") !== "/robo/system") return;
+    const replacements = new Map([
+      ["competition", "Ročník soutěže a jazyk"],
+      ["texts", "Texty stránek (CZ/EN)"],
+      ["penalties", "Penalizace soutěže"],
+      ["teams", "Jména soutěžících a škol"],
+      ["users", "Uživatelé a role"],
+      ["log", "Záznamy systému"],
+    ]);
+    document.querySelectorAll(".settings-list a").forEach((link) => {
+      const key = new URL(link.href, window.location.href).pathname.split("/").filter(Boolean).pop();
+      if (replacements.has(key)) link.textContent = replacements.get(key);
+      link.classList.add("settings-link");
+    });
+    const title = document.querySelector(".page-title");
+    if (title && /nastavení/i.test(title.textContent || "")) title.textContent = "Správa systému";
   }
 
   async function saveChange(element, field, value) {
@@ -270,6 +358,8 @@
   updateClock();
   window.setInterval(updateClock, 1000);
   repairNavigation();
+  repairTeamsPage();
+  repairSystemHome();
 
   function tableCell(value, className = "") {
     const cell = document.createElement("td");

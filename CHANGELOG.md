@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.4.4 - 2026-11-10
+
+### Added
+
+- nové endpointy `teams-save-v044.php` a `teams-import-v044.php` obcházejí staré PHP soubory ponechané v OPcache a zajišťují ukládání týmů, náhled i potvrzení importu.
+- XLSX import rozpoznává běžné české a anglické názvy sloupců i jejich varianty; při chybějícím čísle přidělí čísla podle pořadí neprázdných řádků, chybějící soutěžící ponechá prázdné a ostatní sloupce ignoruje.
+
+### Changed
+
+- číslo existujícího týmu již nelze upravit a nový tým získá další volné číslo na serveru bez ohledu na odeslanou hodnotu formuláře.
+- pole školy a soutěžících jsou širší, sloupec akcí užší a tlačítko kontroly importu nemá šířku celé stránky.
+- správcovský rozcestník používá tlačítka se stručnými názvy bez opakovaného slova „Nastavení“.
+- datum a čas mají velikost značky ROBO a tlačítko nápovědy je umístěno vedle odhlášení.
+
+### Fixed
+
+- klient doplní přihlášené jméno a roli i tehdy, když stará šablona vytvořila prázdný prvek místo jeho úplného vynechání.
+- dodaný XLSX se sloupci `ID týmu` a `Popis týmu` se načte jako seznam týmů se školou a prázdným polem soutěžících.
+
 ## 0.4.3 - 2026-11-10
 
 ### Added

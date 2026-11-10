@@ -22,11 +22,12 @@ final class RankingService
         $statement = $this->pdo->prepare(
             'SELECT t.id AS team_id, t.team_number, t.school_name, t.contestant_names,
                 r.checkpoint_1, r.checkpoint_2, r.checkpoint_3, r.checkpoint_4, r.checkpoint_5, r.checkpoint_6, r.finish_count,
-                r.best_time_ms, r.stop_penalty_seconds, r.is_confirmed,
+                r.best_time_ms, r.did_not_stop, CASE WHEN COALESCE(r.did_not_stop, 0) = 1 THEN COALESCE(p.seconds_value, 5) ELSE 0 END AS stop_penalty_seconds, r.is_confirmed,
                 COALESCE(i.penalty_seconds, 0) AS technical_penalty_seconds
              FROM teams t
              LEFT JOIN rides r ON r.team_id = t.id AND r.competition_id = t.competition_id
              LEFT JOIN technical_inspections i ON i.team_id = t.id AND i.competition_id = t.competition_id
+             LEFT JOIN penalties p ON p.competition_id = t.competition_id AND p.code = \'not_stopped\'
              WHERE t.competition_id = :competition_id
              ORDER BY t.team_number'
         );

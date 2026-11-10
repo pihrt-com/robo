@@ -7,12 +7,16 @@ require __DIR__ . '/TeamImportContractTest.php';
 require __DIR__ . '/AdminValidationTest.php';
 require __DIR__ . '/UpdateContractsTest.php';
 require __DIR__ . '/LayoutRoleTest.php';
+require __DIR__ . '/BackupContractsTest.php';
+require __DIR__ . '/UiContractsTest.php';
 
 use Robo\Tests\BackendContractsTest;
 use Robo\Tests\TeamImportContractTest;
 use Robo\Tests\AdminValidationTest;
 use Robo\Tests\UpdateContractsTest;
 use Robo\Tests\LayoutRoleTest;
+use Robo\Tests\BackupContractsTest;
+use Robo\Tests\UiContractsTest;
 
 try {
     BackendContractsTest::run();
@@ -20,6 +24,8 @@ try {
     AdminValidationTest::run();
     UpdateContractsTest::run();
     LayoutRoleTest::run();
+    BackupContractsTest::run();
+    UiContractsTest::run();
     fwrite(STDOUT, "Backend contract tests passed.\n");
 } catch (Throwable $exception) {
     fwrite(STDERR, "Backend contract tests failed: {$exception->getMessage()}\n");

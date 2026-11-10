@@ -24,6 +24,18 @@ final class AdminValidation
         return $username;
     }
 
+    public static function password(string $password): string
+    {
+        $length = function_exists('mb_strlen') ? mb_strlen($password) : preg_match_all('/./us', $password);
+        if ($length < 12 || $length > 200) {
+            throw new InvalidArgumentException('Heslo musí mít 12 až 200 znaků. Povolená jsou písmena včetně diakritiky, číslice, mezera a znaky ! " # $ % & \' ( ) * + , - . / : ; < = > ? @ [ \\ ] ^ _ ` { | } ~.');
+        }
+        if (preg_match('/[\x00-\x1F\x7F]/u', $password) === 1) {
+            throw new InvalidArgumentException('Heslo nesmí obsahovat řídicí znaky ani zalomení řádku.');
+        }
+        return $password;
+    }
+
     public static function penalty(string $code, string $cs, string $en, int $seconds): array
     {
         if (!preg_match('/^[a-z0-9_]{2,40}$/', $code) || trim($cs) === '' || trim($en) === '' || $seconds < 0 || $seconds > 3600) {

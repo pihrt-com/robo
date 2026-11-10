@@ -13,10 +13,13 @@ final class AdminValidationTest
         $competition = AdminValidation::competition(2027, '2027-03-05', 'en', 32);
         self::assert($competition['team_count'] === 32, 'Team count must be retained.');
         self::assert(AdminValidation::username('track-1.operator') === 'track-1.operator', 'Valid username must be retained.');
+        self::assert(AdminValidation::password('Dlouhé heslo ! 2026') === 'Dlouhé heslo ! 2026', 'Password must accept spaces and special characters.');
         $penalty = AdminValidation::penalty('not_stopped', 'Nezastavení', 'Did not stop', 5);
         self::assert($penalty['seconds'] === 5, 'Penalty seconds must be retained.');
         self::fails(static fn() => AdminValidation::competition(2019, '2027-03-05', 'cs', 16));
         self::fails(static fn() => AdminValidation::username('bad name'));
+        self::fails(static fn() => AdminValidation::password('kratke'));
+        self::fails(static fn() => AdminValidation::password("platne-heslo\nse-zalomenim"));
         self::fails(static fn() => AdminValidation::penalty('?', '', 'Penalty', -1));
     }
 

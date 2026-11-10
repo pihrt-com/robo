@@ -16,6 +16,7 @@ final class LayoutRoleTest
         $admin = self::render(['role_code' => 'administrator', 'permissions' => ['*'], 'page' => 'system']);
         self::assert(str_contains($admin, 'href="/robo/system"'), 'Administrator must see system navigation.');
         self::assert(!str_contains($admin, 'Týmů 16'), 'System page must not show work counters.');
+        self::assert(str_contains($admin, 'Opravdu se chcete odhlásit?'), 'Logout must require confirmation.');
 
         $systemFallback = self::render(['page' => 'system']);
         self::assert(str_contains($systemFallback, 'href="/robo/track-1"'), 'System page fallback must retain administrator navigation.');
@@ -34,7 +35,7 @@ final class LayoutRoleTest
         $content = '<p>Obsah</p>';
         $csrf = 'test-token';
         $help = '<p>Nápověda</p>';
-        $view = ['year' => '2026', 'locale' => 'cs', 'user' => 'test', 'teams' => 16, 'pending' => 3] + $role;
+        $view = ['year' => '2026', 'locale' => 'cs', 'user' => 'test', 'role_label' => 'Správce', 'teams' => 16, 'pending' => 3] + $role;
         ob_start();
         require dirname(__DIR__) . '/views/layout.php';
         return (string) ob_get_clean();

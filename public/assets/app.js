@@ -39,14 +39,50 @@
       if (!response.ok) throw new Error("Uložení se nezdařilo. Obnovte stránku a zkuste akci znovu.");
       const payload = await response.json();
       setPendingCount(payload.pending);
+      updateSavedRow(panel, row, field, payload);
       setSaveStatus("saved");
+      return payload;
     } catch (error) {
       setSaveStatus("error");
       throw error;
     }
   }
 
+  function updateSavedRow(panel, row, field, payload) {
+    if (panel.dataset.page === "technical") {
+      const penalty = row.querySelector('[data-computed="technical-penalty"]');
+      const result = row.querySelector('[data-computed="technical-result"]');
+      if (penalty) penalty.textContent = Number(payload.penalty) > 0 ? String(payload.penalty) : "—";
+      if (result) {
+        result.textContent = payload.complete ? (payload.passed ? "ANO" : "NE") : "?";
+        result.classList.toggle("result-passed", Boolean(payload.complete && payload.passed));
+        result.classList.toggle("result-failed", Boolean(payload.complete && !payload.passed));
+      }
+      const note = row.querySelector("[data-note-button]");
+      if (note && field === "note") {
+        note.classList.toggle("has-note", Boolean(payload.has_note));
+        note.textContent = payload.has_note ? "Poznámka ✓" : "Poznámka";
+      }
+    }
+    if (panel.dataset.page === "race") {
+      const completion = row.querySelector(".completion");
+      if (completion && typeof payload.confirmed === "boolean") {
+        const state = payload.confirmed ? (payload.best_time ? "confirmed" : "invalid") : "pending";
+        completion.dataset.state = state;
+        completion.textContent = state === "confirmed" ? "✓" : state === "invalid" ? "×" : "?";
+        completion.setAttribute("aria-label", payload.confirmed ? (payload.best_time ? "Výsledek potvrzen" : "Potvrzeno bez platného času") : "Rozpracovaný výsledek");
+        row.classList.toggle("row-complete", payload.confirmed);
+        row.querySelectorAll(".value-missing[data-empty-value]").forEach((value) => { value.textContent = payload.confirmed ? "" : value.dataset.emptyValue; });
+      }
+    }
+  }
+
   document.addEventListener("click", (event) => {
+    const confirmAction = event.target.closest("[data-confirm]");
+    if (confirmAction && !window.confirm(confirmAction.dataset.confirm)) {
+      event.preventDefault();
+      return;
+    }
     const help = event.target.closest("[data-help-modal]");
     if (help) { openModal(help.dataset.helpModal); return; }
     const close = event.target.closest("[data-close-modal]");
@@ -78,7 +114,7 @@
     }
     const completion = event.target.closest(".completion");
     if (completion) {
-      const completed = completion.dataset.state !== "confirmed";
+      const completed = completion.dataset.state === "pending";
       completion.dataset.state = completed ? "confirmed" : "pending";
       completion.textContent = completed ? "✓" : "?";
       completion.setAttribute("aria-label", completed ? "Výsledek potvrzen" : "Rozpracovaný výsledek");
@@ -136,8 +172,15 @@
     if (note) {
       const input = note.closest("dialog")?.querySelector("[data-field='note']");
       const row = document.querySelector(`[data-team-id="${note.dataset.saveNote}"]`);
-      if (input && row) saveChange(row, "note", input.value).then(() => window.location.reload()).catch((error) => window.alert(error.message));
+      if (input && row) saveChange(row, "note", input.value).then(() => note.closest("dialog")?.close()).catch((error) => window.alert(error.message));
     }
+  });
+
+  document.addEventListener("change", (event) => {
+    const toggle = event.target.closest(".switch-control input[type='checkbox']");
+    if (!toggle) return;
+    const label = toggle.closest(".switch-control")?.querySelector(".switch-label");
+    if (label && label.textContent !== "Aktivní účet") label.textContent = toggle.checked ? "Zapnuto" : "Vypnuto";
   });
 
   document.querySelectorAll("dialog").forEach((dialog) => dialog.addEventListener("click", (event) => {

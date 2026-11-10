@@ -12,3 +12,7 @@ ROBO je webová aplikace pro řízení robotické soutěže od instalace až po 
 - Spravuje soutěžní ročníky, týmy, školy, soutěžící, uživatele, role, texty rozhraní a auditní záznamy.
 - Exportuje výsledky do XLSX a připravuje data pro aplikaci Playoff.
 
+## Poslední změny
+
+- 2026-11-10 · složka `C:\GitHub\robo`: technická kontrola nyní okamžitě přepočítává výsledek a penalizaci, řádky s poznámkou jsou označené, jízdy a celkové hodnocení správně používají penalizaci za nezastavení, správa uživatelů obsahuje validaci, přepínače, mazání a změnu vlastního hesla, log zobrazuje podrobnosti a podporuje hledání a systém umí vytvořit i obnovit úplnou zašifrovanou zálohu.
+

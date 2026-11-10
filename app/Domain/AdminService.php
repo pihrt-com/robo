@@ -6,6 +6,7 @@ namespace Robo\Domain;
 use PDO;
 use Robo\Core\AuditLogger;
 use RuntimeException;
+use PDOException;
 
 final class AdminService
 {
@@ -104,7 +105,8 @@ final class AdminService
 
     public function savePageText(int $competitionId, string $page, string $key, string $locale, string $text, int $userId, string $ip): void
     {
-        if (!preg_match('/^[a-z0-9_-]{2,80}$/', $page) || !preg_match('/^[a-z0-9_-]{2,80}$/', $key) || !in_array($locale, ['cs', 'en'], true) || trim($text) === '' || mb_strlen($text) > 255) {
+        $textLength = function_exists('mb_strlen') ? mb_strlen($text) : preg_match_all('/./us', $text);
+        if (!preg_match('/^[a-z0-9_-]{2,80}$/', $page) || !preg_match('/^[a-z0-9_-]{2,80}$/', $key) || !in_array($locale, ['cs', 'en'], true) || trim($text) === '' || $textLength > 255) {
             throw new RuntimeException('Text stránky není platný.');
         }
         $save = $this->pdo->prepare('INSERT INTO page_texts (competition_id,page_key,text_key,locale,text_value) VALUES (:competition_id,:page_key,:text_key,:locale,:text_value) ON DUPLICATE KEY UPDATE text_value=VALUES(text_value)');
@@ -146,11 +148,17 @@ final class AdminService
             throw new RuntimeException('Vybraná role neexistuje.');
         }
         if ($id === null) {
-            if ($password === null || strlen($password) < 12) {
+            if ($password === null || $password === '') {
                 throw new RuntimeException('Nový uživatel potřebuje heslo o délce alespoň 12 znaků.');
             }
+            $password = AdminValidation::password($password);
             $save = $this->pdo->prepare('INSERT INTO users (username,password_hash,role_code,is_active) VALUES (:username,:password_hash,:role_code,:is_active)');
-            $save->execute(['username' => $username, 'password_hash' => password_hash($password, PASSWORD_DEFAULT), 'role_code' => $role, 'is_active' => $active ? 1 : 0]);
+            try {
+                $save->execute(['username' => $username, 'password_hash' => password_hash($password, PASSWORD_DEFAULT), 'role_code' => $role, 'is_active' => $active ? 1 : 0]);
+            } catch (PDOException $exception) {
+                if ((string) $exception->getCode() === '23000') throw new RuntimeException('Uživatel s tímto jménem již existuje.', 0, $exception);
+                throw $exception;
+            }
             $targetId = (int) $this->pdo->lastInsertId();
         } else {
             if ($id === $actorId && !$active) {
@@ -159,16 +167,54 @@ final class AdminService
             $sql = 'UPDATE users SET username=:username, role_code=:role_code, is_active=:is_active';
             $params = ['username' => $username, 'role_code' => $role, 'is_active' => $active ? 1 : 0, 'id' => $id];
             if ($password !== null && $password !== '') {
-                if (strlen($password) < 12) throw new RuntimeException('Nové heslo musí mít alespoň 12 znaků.');
+                $password = AdminValidation::password($password);
                 $sql .= ', password_hash=:password_hash';
                 $params['password_hash'] = password_hash($password, PASSWORD_DEFAULT);
             }
             $sql .= ' WHERE id=:id';
             $save = $this->pdo->prepare($sql);
-            $save->execute($params);
+            try {
+                $save->execute($params);
+            } catch (PDOException $exception) {
+                if ((string) $exception->getCode() === '23000') throw new RuntimeException('Uživatel s tímto jménem již existuje.', 0, $exception);
+                throw $exception;
+            }
             $targetId = $id;
         }
         $this->audit->log($actorId, null, 'system.user_saved', 'Byl uložen uživatelský účet.', ['target_user_id' => $targetId, 'active' => $active], $ip);
+    }
+
+    public function deleteUser(int $id, int $actorId, string $ip): void
+    {
+        if ($id === $actorId) throw new RuntimeException('Vlastní přihlášený účet nelze smazat.');
+        $query = $this->pdo->prepare('SELECT username, role_code, is_active FROM users WHERE id=:id');
+        $query->execute(['id' => $id]);
+        $account = $query->fetch();
+        if ($account === false) throw new RuntimeException('Uživatel nebyl nalezen.');
+        if ($account['role_code'] === 'administrator' && (int) $account['is_active'] === 1) {
+            $count = (int) $this->pdo->query("SELECT COUNT(*) FROM users WHERE role_code='administrator' AND is_active=1")->fetchColumn();
+            if ($count <= 1) throw new RuntimeException('Poslední aktivní účet správce nelze smazat.');
+        }
+        $scores = $this->pdo->prepare('SELECT COUNT(*) FROM judging_scores WHERE judge_user_id=:id');
+        $scores->execute(['id' => $id]);
+        if ((int) $scores->fetchColumn() > 0) throw new RuntimeException('Uživatele nelze smazat, protože je autorem bodového hodnocení. Nejprve účet zakažte.');
+        $this->audit->log($actorId, null, 'system.user_deleted', 'Uživatelský účet byl smazán.', ['target_user_id' => $id, 'username' => (string) $account['username']], $ip);
+        $delete = $this->pdo->prepare('DELETE FROM users WHERE id=:id');
+        $delete->execute(['id' => $id]);
+    }
+
+    public function changeOwnPassword(int $userId, string $currentPassword, string $newPassword, string $confirmation, string $ip): void
+    {
+        if ($newPassword !== $confirmation) throw new RuntimeException('Nové heslo a jeho potvrzení se neshodují.');
+        $query = $this->pdo->prepare('SELECT password_hash FROM users WHERE id=:id AND is_active=1');
+        $query->execute(['id' => $userId]);
+        $hash = $query->fetchColumn();
+        if (!is_string($hash) || !password_verify($currentPassword, $hash)) throw new RuntimeException('Současné heslo není správné.');
+        $newPassword = AdminValidation::password($newPassword);
+        if (password_verify($newPassword, $hash)) throw new RuntimeException('Nové heslo musí být jiné než současné heslo.');
+        $update = $this->pdo->prepare('UPDATE users SET password_hash=:password_hash WHERE id=:id');
+        $update->execute(['password_hash' => password_hash($newPassword, PASSWORD_DEFAULT), 'id' => $userId]);
+        $this->audit->log($userId, null, 'security.password_changed', 'Uživatel změnil své heslo.', [], $ip);
     }
 
     public function audit(string $search, int $page, int $perPage = 100): array
@@ -178,13 +224,15 @@ final class AdminService
         $where = '';
         $params = [];
         if ($search !== '') {
-            $where = 'WHERE a.message LIKE :term OR a.event_type LIKE :term OR u.username LIKE :term OR a.ip_address LIKE :term';
-            $params['term'] = '%' . mb_substr($search, 0, 100) . '%';
+            $where = 'WHERE a.message LIKE :message OR a.event_type LIKE :event_type OR u.username LIKE :username OR a.ip_address LIKE :ip OR a.context_json LIKE :context';
+            $limitedSearch = function_exists('mb_substr') ? mb_substr($search, 0, 100) : implode('', array_slice(preg_split('//u', $search, -1, PREG_SPLIT_NO_EMPTY) ?: [], 0, 100));
+            $term = '%' . $limitedSearch . '%';
+            $params = ['message' => $term, 'event_type' => $term, 'username' => $term, 'ip' => $term, 'context' => $term];
         }
         $count = $this->pdo->prepare('SELECT COUNT(*) FROM audit_log a LEFT JOIN users u ON u.id=a.user_id ' . $where);
         $count->execute($params);
         $total = (int) $count->fetchColumn();
-        $query = $this->pdo->prepare('SELECT a.id,a.created_at,a.event_type,a.message,a.ip_address,u.username FROM audit_log a LEFT JOIN users u ON u.id=a.user_id ' . $where . ' ORDER BY a.id DESC LIMIT ' . $perPage . ' OFFSET ' . $offset);
+        $query = $this->pdo->prepare('SELECT a.id,a.created_at,a.user_id,a.competition_id,a.event_type,a.message,a.context_json,a.ip_address,u.username FROM audit_log a LEFT JOIN users u ON u.id=a.user_id ' . $where . ' ORDER BY a.id DESC LIMIT ' . $perPage . ' OFFSET ' . $offset);
         $query->execute($params);
         return ['rows' => $query->fetchAll(), 'total' => $total, 'page' => $page, 'per_page' => $perPage];
     }

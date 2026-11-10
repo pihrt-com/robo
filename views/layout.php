@@ -1,7 +1,7 @@
 <?php
 /** @var string $title */
 /** @var string $content */
-/** @var array{year?: string, locale?: string, user?: string, teams?: int, pending?: int, saved_at?: string, page?: string, role_code?: string, permissions?: list<string>} $view */
+/** @var array{year?: string, locale?: string, user?: string, role_label?: string, teams?: int, pending?: int, saved_at?: string, page?: string, role_code?: string, permissions?: list<string>} $view */
 $view = $view ?? [];
 $localeLabel = ($view['locale'] ?? 'cs') === 'cs' ? 'CZ' : strtoupper((string) ($view['locale'] ?? 'en'));
 $text = static fn (string $page, string $key, string $fallback): string => function_exists('ui_text') ? ui_text($page, $key, $fallback) : $fallback;
@@ -47,8 +47,8 @@ $workPage = in_array($page, ['technical', 'track-1', 'track-2'], true);
       <span class="meta-optional" data-pending-count>Chybí <?= (int) ($view['pending'] ?? 0) ?> dokončit</span>
       <span class="meta-optional" data-save-status aria-live="polite">Čeká na změnu</span>
       <?php endif; ?>
-      <span><?= htmlspecialchars($view['user'] ?? '', ENT_QUOTES, 'UTF-8') ?></span>
-      <form method="post" action="/robo/logout"><input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrf ?? '', ENT_QUOTES, 'UTF-8') ?>"><button class="button button-primary button-small"><?= htmlspecialchars($text('navigation', 'logout', 'Odhlásit se'), ENT_QUOTES, 'UTF-8') ?></button></form>
+      <span class="signed-user"><strong><?= htmlspecialchars($view['user'] ?? '', ENT_QUOTES, 'UTF-8') ?></strong><small><?= htmlspecialchars($view['role_label'] ?? $view['role_code'] ?? '', ENT_QUOTES, 'UTF-8') ?></small></span>
+      <form method="post" action="/robo/logout"><input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrf ?? '', ENT_QUOTES, 'UTF-8') ?>"><button class="button button-primary button-small" data-confirm="Opravdu se chcete odhlásit?"><?= htmlspecialchars($text('navigation', 'logout', 'Odhlásit se'), ENT_QUOTES, 'UTF-8') ?></button></form>
     </div>
     <div class="brand-row">
       <a class="brand" href="/robo/">ROBO <?= htmlspecialchars($view['year'] ?? '', ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars($localeLabel, ENT_QUOTES, 'UTF-8') ?></a>

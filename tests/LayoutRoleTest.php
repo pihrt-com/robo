@@ -15,6 +15,9 @@ final class LayoutRoleTest
 
         $admin = self::render(['role_code' => 'administrator', 'permissions' => ['*'], 'page' => 'system']);
         self::assert(str_contains($admin, 'href="/robo/system"'), 'Administrator must see system navigation.');
+        self::assert(str_contains($admin, '<nav class="nav-row" aria-label="Hlavní navigace">'), 'Administrator must receive the visible navigation bar.');
+        self::assert(substr_count($admin, 'class="nav-link"') === 5, 'Administrator must receive all five navigation buttons.');
+        self::assert(str_contains($admin, '/robo/assets/app.css?v='), 'Static assets must be cache-busted after an update.');
         self::assert(!str_contains($admin, 'Týmů 16'), 'System page must not show work counters.');
         self::assert(str_contains($admin, 'Opravdu se chcete odhlásit?'), 'Logout must require confirmation.');
 

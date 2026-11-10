@@ -27,6 +27,10 @@ if (!$administrator && $permissions === []) {
     $administrator = in_array('*', $permissions, true);
 }
 $workPage = in_array($page, ['technical', 'track-1', 'track-2'], true);
+$assetVersion = max(
+    (int) (@filemtime(dirname(__DIR__) . '/public/assets/app.css') ?: 0),
+    (int) (@filemtime(dirname(__DIR__) . '/public/assets/app.js') ?: 0)
+);
 ?>
 <!doctype html>
 <html lang="<?= htmlspecialchars($view['locale'] ?? 'cs', ENT_QUOTES, 'UTF-8') ?>">
@@ -35,13 +39,13 @@ $workPage = in_array($page, ['technical', 'track-1', 'track-2'], true);
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title><?= htmlspecialchars($title ?? 'ROBO', ENT_QUOTES, 'UTF-8') ?></title>
-  <link rel="stylesheet" href="/robo/assets/app.css">
+  <link rel="stylesheet" href="/robo/assets/app.css?v=<?= $assetVersion ?>">
 </head>
 <body>
 <div class="app-shell">
   <header class="app-header">
     <div class="meta-row<?= $workPage ? '' : ' meta-row-static' ?>">
-      <strong data-current-date>--.--.----</strong><strong data-current-time>--:--:--</strong>
+      <span class="current-clock"><strong data-current-date>--.--.----</strong><strong data-current-time>--:--:--</strong></span>
       <?php if ($workPage): ?>
       <span>Týmů <?= (int) ($view['teams'] ?? 0) ?></span>
       <span class="meta-optional" data-pending-count>Chybí <?= (int) ($view['pending'] ?? 0) ?> dokončit</span>
@@ -70,6 +74,6 @@ $workPage = in_array($page, ['technical', 'track-1', 'track-2'], true);
   <div class="modal-body"><?= $help ?? '<p>Pro tuto stránku zatím není nápověda připravena.</p>' ?></div>
   <div class="modal-footer"><button class="button button-neutral" type="button" data-close-modal>Zavřít</button></div>
 </dialog>
-<script src="/robo/assets/app.js" defer></script>
+<script src="/robo/assets/app.js?v=<?= $assetVersion ?>" defer></script>
 </body>
 </html>

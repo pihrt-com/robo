@@ -15,13 +15,26 @@ final class UiContractsTest
         self::assert(str_contains($technical, 'data-note-button'), 'Technical note button must expose its saved state.');
         self::assert(str_contains($technical, 'note-button has-note'), 'Saved technical note must be visibly marked.');
         self::assert(str_contains($technical, 'data-computed="technical-result" class="result-failed"'), 'Technical result must be updateable in place.');
+        self::assert(str_contains($technical, 'class="modal-body team-details"'), 'Team details must use the larger regular-weight presentation.');
 
         $race = self::render('race', ['track' => 1, 'teams' => [[
             'id' => 1, 'number' => 1, 'school' => '', 'members' => '', 'confirmed' => 1, 'best_time' => null, 'did_not_stop' => 1,
         ]]]);
         self::assert(str_contains($race, 'class="row-complete"'), 'Confirmed ride must mark its complete row.');
-        self::assert(str_contains($race, 'data-field="checkpoint_1" data-empty-value="?"></button>'), 'Confirmed ride must hide unanswered placeholders.');
+        self::assert(str_contains($race, 'data-field="checkpoint_1" data-value="0" data-empty-value="?"></button>'), 'Confirmed ride must hide unanswered placeholders.');
         self::assert(str_contains($race, 'data-state="invalid"'), 'Confirmed ride without a lap must show the invalid marker.');
+
+        $activeRace = self::render('race', ['track' => 1, 'teams' => [[
+            'id' => 2, 'number' => 3, 'school' => 'Škola', 'members' => 'Jméno', 'checkpoint_1' => 6, 'time_1' => 12345, 'best_time' => 12345, 'confirmed' => 0, 'did_not_stop' => 0,
+        ]]]);
+        self::assert(str_contains($activeRace, 'data-value="6" data-empty-value="?">6x</button>'), 'Checkpoint counts must include the x suffix and retain their numeric value.');
+        self::assert(str_contains($activeRace, 'data-open-modal="edit-2-time_1"'), 'Lap time editing must open on a regular click.');
+        self::assert(!str_contains($activeRace, 'data-long-press="edit-2-time_1"'), 'Lap time editing must not require a long press.');
+
+        $javascript = (string) file_get_contents(dirname(__DIR__) . '/public/assets/app.js');
+        $stylesheet = (string) file_get_contents(dirname(__DIR__) . '/public/assets/app.css');
+        self::assert(str_contains($javascript, 'if (field === "is_confirmed")'), 'A regular checkpoint response must not restore missing placeholders.');
+        self::assert(str_contains($stylesheet, '.best-time .team-button { color: var(--white); }'), 'The best-time button text must remain white.');
     }
 
     private static function render(string $viewName, array $variables): string

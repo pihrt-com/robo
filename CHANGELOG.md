@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased - 2026-11-10
+
+### Changed
+
+- průjezdní body zobrazují počet průjezdů s příponou `x`; přesná oprava bodů nadále vyžaduje podržení, ale okno pro zápis času se otevře běžným kliknutím.
+- dialog týmu zobrazuje školu a soutěžící větším netučným písmem a datum s časem začíná na stejné svislé ose jako značka ROBO.
+
+### Fixed
+
+- první i další kliknutí na průjezdní bod se po potvrzení serverem ihned zobrazí a klient již změněnou hodnotu nevrací na `?`.
+- tlačítko uvnitř zelené buňky nejlepšího času dědí bílou barvu textu.
+- šablona kontroluje administrátorský navigační pruh a přidává k CSS a JavaScriptu verzi podle změny souborů, aby prohlížeč po aktualizaci načetl nové rozhraní.
+
 ## 0.4.0 - 2026-11-10
 
 ### Added

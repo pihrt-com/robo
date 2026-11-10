@@ -22,8 +22,9 @@ button { border-radius: var(--radius); font-weight: 800; cursor: pointer; }
 
 .app-shell { min-height: 100vh; background: var(--page); }
 .app-header { position: sticky; top: 0; z-index: 20; background: var(--header); border-bottom: 1px dashed var(--ink); box-shadow: 0 2px 0 rgba(0,0,0,.1); }
-.meta-row { display: grid; grid-template-columns: auto auto minmax(110px,1fr) minmax(160px,1.4fr) minmax(160px,1.4fr) auto auto; align-items: center; gap: .5rem; min-height: 34px; padding: .28rem max(1rem, calc((100vw - 1440px) / 2)); font-size: .78rem; }
-.meta-row-static { grid-template-columns: auto auto 1fr auto auto; }
+.meta-row { display: grid; grid-template-columns: auto minmax(110px,1fr) minmax(160px,1.4fr) minmax(160px,1.4fr) auto auto; align-items: center; gap: .5rem; min-height: 34px; padding: .28rem max(1rem, calc((100vw - 1600px) / 2)); font-size: .78rem; }
+.meta-row-static { grid-template-columns: auto 1fr auto auto; }
+.current-clock { display: inline-flex; gap: .5rem; }
 .brand-row { display: grid; grid-template-columns: max-content minmax(0, 1fr) max-content; align-items: center; column-gap: .75rem; min-height: 54px; padding: 0 max(1rem, calc((100vw - 1600px) / 2)); }
 .brand { color: var(--orange); font-weight: 800; font-size: 1.3rem; text-decoration: none; }
 .page-title { min-width: 0; overflow: hidden; color: var(--orange); font-size: clamp(1.05rem, 2.15vw, 1.45rem); font-weight: 800; text-align: center; text-overflow: ellipsis; white-space: nowrap; margin: 0; }
@@ -91,6 +92,7 @@ button { border-radius: var(--radius); font-weight: 800; cursor: pointer; }
 .result-passed { color: var(--green); font-weight: 900; }
 .result-failed { color: var(--red); font-weight: 900; }
 .best-time { color: var(--white); background: var(--green); font-weight: 800; }
+.best-time .team-button { color: var(--white); }
 .progress-mark { color: var(--green); font-weight: 800; }
 
 .admin-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(420px, .9fr); align-items: start; gap: 1.35rem 2.25rem; }
@@ -140,6 +142,8 @@ dialog::backdrop { background: rgba(0,0,0,.55); }
 .modal-close { border: 0; color: var(--white); background: transparent; font-size: 2rem; line-height: 1; }
 .modal-body { padding: 1rem; background: var(--page); }
 .modal-body p:first-child { margin-top: 0; }
+.team-details { font-size: 1.3rem; font-weight: 400; }
+.team-details p { font-weight: 400; }
 .modal-footer { display: flex; justify-content: flex-end; gap: .5rem; padding: .75rem 1rem; background: var(--page); }
 
 @media (max-width: 900px) {

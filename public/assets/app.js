@@ -72,7 +72,7 @@
         completion.textContent = state === "confirmed" ? "✓" : state === "invalid" ? "×" : "?";
         completion.setAttribute("aria-label", payload.confirmed ? (payload.best_time ? "Výsledek potvrzen" : "Potvrzeno bez platného času") : "Rozpracovaný výsledek");
         row.classList.toggle("row-complete", payload.confirmed);
-        row.querySelectorAll(".value-missing[data-empty-value]").forEach((value) => { value.textContent = payload.confirmed ? "" : value.dataset.emptyValue; });
+        if (field === "is_confirmed") row.querySelectorAll(".value-missing[data-empty-value]").forEach((value) => { value.textContent = payload.confirmed ? "" : value.dataset.emptyValue; });
       }
     }
   }
@@ -85,6 +85,12 @@
     }
     const help = event.target.closest("[data-help-modal]");
     if (help) { openModal(help.dataset.helpModal); return; }
+    const modalTrigger = event.target.closest("[data-open-modal]");
+    if (modalTrigger) {
+      openModal(modalTrigger.dataset.openModal);
+      document.getElementById(modalTrigger.dataset.openModal)?.querySelector("input")?.focus();
+      return;
+    }
     const close = event.target.closest("[data-close-modal]");
     if (close) { close.closest("dialog")?.close(); return; }
     const toggle = event.target.closest("[data-password-toggle]");
@@ -125,9 +131,12 @@
     if (increment && increment.dataset.longPressHandled !== "true") {
       const field = increment.dataset.field || "";
       if (field.startsWith("checkpoint_") || field === "finish") {
-        const current = Number(increment.textContent.trim());
-        increment.textContent = String(Number.isFinite(current) ? current + 1 : 1);
-        increment.dispatchEvent(new CustomEvent("robo:state-change", { bubbles: true, detail: { value: Number(increment.textContent), field } }));
+        const current = Number(increment.dataset.value || 0);
+        const next = Number.isFinite(current) ? current + 1 : 1;
+        increment.dataset.value = String(next);
+        increment.textContent = `${next}x`;
+        increment.classList.remove("value-missing");
+        increment.dispatchEvent(new CustomEvent("robo:state-change", { bubbles: true, detail: { value: next, field } }));
       }
     }
     delete increment?.dataset.longPressHandled;

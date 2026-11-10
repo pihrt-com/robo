@@ -23,6 +23,69 @@
     if (dialog && typeof dialog.showModal === "function") dialog.showModal();
   }
 
+  async function repairNavigation() {
+    const header = document.querySelector(".app-header");
+    if (!header) return;
+    const existingNavigation = header.querySelector(".nav-row");
+    const needsUser = !header.querySelector(".signed-user");
+    const needsNavigation = !existingNavigation || existingNavigation.children.length === 0;
+    if (!needsUser && !needsNavigation) return;
+    try {
+      const response = await fetch("/robo/navigation-v043.php", {
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: { Accept: "application/json" },
+      });
+      if (response.status === 401) {
+        window.location.assign("/robo/login");
+        return;
+      }
+      if (!response.ok) throw new Error("Navigation endpoint failed");
+      const payload = await response.json();
+      if (needsUser) {
+        const meta = header.querySelector(".meta-row");
+        const logout = meta?.querySelector('form[action$="/logout"]');
+        if (meta && logout) {
+          const signedUser = document.createElement("span");
+          signedUser.className = "signed-user";
+          const username = document.createElement("strong");
+          username.textContent = String(payload.username || "");
+          const role = document.createElement("small");
+          role.textContent = String(payload.role || "");
+          signedUser.append(username, role);
+          meta.insertBefore(signedUser, logout);
+        }
+      }
+      if (needsNavigation && Array.isArray(payload.navigation)) {
+        const navigation = existingNavigation || document.createElement("nav");
+        navigation.className = "nav-row";
+        navigation.setAttribute("aria-label", "Hlavní navigace");
+        const requestPath = window.location.pathname.replace(/^\/robo\/?/, "").replace(/\/$/, "");
+        const activePath = requestPath.startsWith("system") ? "system" : (requestPath || "standings");
+        const links = payload.navigation.map((item) => {
+          const link = document.createElement("a");
+          link.className = "nav-link";
+          link.href = `/robo/${String(item.path || "")}`;
+          link.textContent = String(item.label || "");
+          if (item.path === activePath) link.setAttribute("aria-current", "page");
+          return link;
+        });
+        navigation.replaceChildren(...links);
+        navigation.dataset.navigationRepair = "0.4.3";
+        if (!existingNavigation) header.append(navigation);
+      }
+    } catch (error) {
+      if (!header.querySelector(".navigation-error")) {
+        const message = document.createElement("div");
+        message.className = "navigation-error";
+        message.setAttribute("role", "alert");
+        message.textContent = "Navigaci se nepodařilo načíst. Obnovte stránku pomocí Ctrl+F5.";
+        header.append(message);
+      }
+      console.error("ROBO navigation repair failed", error);
+    }
+  }
+
   async function saveChange(element, field, value) {
     const panel = element.closest("[data-endpoint]");
     const row = element.closest("[data-team-id]");
@@ -206,6 +269,7 @@
   }
   updateClock();
   window.setInterval(updateClock, 1000);
+  repairNavigation();
 
   function tableCell(value, className = "") {
     const cell = document.createElement("td");

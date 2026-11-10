@@ -14,6 +14,7 @@ ROBO je webová aplikace pro řízení robotické soutěže od instalace až po 
 
 ## Poslední změny
 
+- 2026-11-10 · složka `C:\GitHub\robo`: chybějící navigaci nyní doplňuje JavaScript přes nový autentizovaný endpoint nezávislý na starých PHP šablonách v OPcache; endpoint vrací přihlášené jméno, lokalizovanou roli a jen povolené položky menu, zatímco `.htaccess` nutí prohlížeč znovu ověřovat CSS a JavaScript.
 - 2026-11-10 · složka `C:\GitHub\robo`: všechny přihlášené stránky používají nově pojmenovanou šablonu záhlaví, aby hosting nemohl dál vracet starou navigaci z PHP OPcache; Celkové pořadí zobrazuje počty průjezdů s `x`, zvětšuje číslo týmu na velikost pořadí, odděluje exportní tlačítka od tabulky a nezvýrazňuje výsledný čas zeleným pozadím ani odlišným fontem.
 - 2026-11-10 · složka `C:\GitHub\robo`: administrátorský navigační pruh má regresní kontrolu a CSS/JavaScript používají verzi odvozenou od změny souborů; nejlepší čas se upravuje běžným kliknutím, průjezdní body se zobrazují s `x`, změny z `?` se propisují bez obnovení stránky, nejlepší čas má bílý text a podrobnosti týmu mají větší netučné písmo; datum s časem je zarovnáno nad značku ROBO.
 - 2026-11-10 · složka `C:\GitHub\robo`: technická kontrola nyní okamžitě přepočítává výsledek a penalizaci, řádky s poznámkou jsou označené, jízdy a celkové hodnocení správně používají penalizaci za nezastavení, správa uživatelů obsahuje validaci, přepínače, mazání a změnu vlastního hesla, log zobrazuje podrobnosti a podporuje hledání a systém umí vytvořit i obnovit úplnou zašifrovanou zálohu.

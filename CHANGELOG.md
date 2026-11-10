@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.3 - 2026-11-10
+
+### Added
+
+- nový endpoint `navigation-v043.php` načítá přihlášeného uživatele, lokalizovanou roli a navigaci filtrovanou podle oprávnění přímo z aktivní relace a databáze.
+
+### Fixed
+
+- pokud hosting stále spouští starou zkompilovanou šablonu bez uživatele a menu, JavaScript chybějící údaje a navigační pruh doplní bez závislosti na této šabloně; při chybě zobrazí viditelné upozornění.
+- `.htaccess` nastavuje pro CSS a JavaScript opětovné ověření při načtení stránky, aby prohlížeč nepoužíval starou verzi opravy navigace.
+
 ## 0.4.2 - 2026-11-10
 
 ### Changed

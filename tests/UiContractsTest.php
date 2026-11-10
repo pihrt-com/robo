@@ -34,6 +34,8 @@ final class UiContractsTest
         $javascript = (string) file_get_contents(dirname(__DIR__) . '/public/assets/app.js');
         $stylesheet = (string) file_get_contents(dirname(__DIR__) . '/public/assets/app.css');
         self::assert(str_contains($javascript, 'if (field === "is_confirmed")'), 'A regular checkpoint response must not restore missing placeholders.');
+        self::assert(str_contains($javascript, 'fetch("/robo/navigation-v043.php"'), 'Stale authenticated layouts must repair navigation through the new endpoint.');
+        self::assert(str_contains($javascript, 'navigation.dataset.navigationRepair = "0.4.3"'), 'Repaired navigation must expose its client-side version marker.');
         self::assert(str_contains($stylesheet, '.best-time .team-button { color: var(--white); }'), 'The best-time button text must remain white.');
 
         $standings = self::render('standings', ['rows' => [[

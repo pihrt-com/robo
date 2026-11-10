@@ -33,6 +33,7 @@ button { border-radius: var(--radius); font-weight: 800; cursor: pointer; }
 .nav-row { display: flex; justify-content: center; gap: 0; border-top: 1px dashed var(--ink); }
 .nav-link { min-width: 162px; padding: .8rem 1rem; color: var(--ink); background: #d4dae3; border: var(--line); border-bottom: 0; text-align: center; font-weight: 800; text-decoration: none; }
 .nav-link[aria-current="page"], .nav-link:hover { color: var(--white); background: var(--ink); }
+.navigation-error { padding: .45rem 1rem; color: #960000; background: #ffdad7; border-top: 1px dashed var(--ink); text-align: center; font-weight: 800; }
 .filter-row { display: flex; align-items: center; gap: .65rem; margin: 0 0 1rem; }
 .filter-row select { min-width: 17rem; }
 .page-preview-link { color: var(--green); font-weight: 800; }

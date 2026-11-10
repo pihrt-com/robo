@@ -1,0 +1,10 @@
+<?php
+declare(strict_types=1);
+
+return [
+    'db_dsn' => 'mysql:host=localhost;dbname=robo;charset=utf8mb4',
+    'db_user' => 'database_user',
+    'db_password' => 'replace-with-a-secret',
+    'app_secret' => 'replace-with-a-long-random-secret',
+    'secure_cookie' => true,
+];

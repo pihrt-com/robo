@@ -1,16 +1,18 @@
 <?php
 /** @var string $title */
 /** @var string $content */
-/** @var array{year?: string, locale?: string, user?: string, teams?: int, pending?: int, saved_at?: string, page?: string} $view */
+/** @var array{year?: string, locale?: string, user?: string, teams?: int, pending?: int, saved_at?: string, page?: string, role_code?: string, permissions?: list<string>} $view */
 $view = $view ?? [];
 $localeLabel = ($view['locale'] ?? 'cs') === 'cs' ? 'CZ' : strtoupper((string) ($view['locale'] ?? 'en'));
 $nav = [
-    'technical' => 'TECHNICKÁ',
-    'track-1' => 'DRÁHA 1',
-    'track-2' => 'DRÁHA 2',
-    'standings' => 'POŘADÍ',
-    'system' => 'SYSTÉM',
+    ['path' => 'technical', 'label' => 'TECHNICKÁ', 'permission' => 'technical.view'],
+    ['path' => 'track-1', 'label' => 'DRÁHA 1', 'permission' => 'track_1.view'],
+    ['path' => 'track-2', 'label' => 'DRÁHA 2', 'permission' => 'track_2.view'],
+    ['path' => 'standings', 'label' => 'POŘADÍ', 'permission' => 'results.view'],
+    ['path' => 'system', 'label' => 'SYSTÉM', 'permission' => 'system.view'],
 ];
+$permissions = is_array($view['permissions'] ?? null) ? $view['permissions'] : [];
+$administrator = ($view['role_code'] ?? '') === 'administrator' || in_array('*', $permissions, true);
 ?>
 <!doctype html>
 <html lang="<?= htmlspecialchars($view['locale'] ?? 'cs', ENT_QUOTES, 'UTF-8') ?>">
@@ -27,8 +29,8 @@ $nav = [
     <div class="meta-row">
       <strong data-current-date>--.--.----</strong><strong data-current-time>--:--:--</strong>
       <span>Týmů <?= (int) ($view['teams'] ?? 0) ?></span>
-      <span class="meta-optional">Chybí <?= (int) ($view['pending'] ?? 0) ?> dokončit</span>
-      <span class="meta-optional">Data uložena<?= empty($view['saved_at']) ? '' : ' → '.htmlspecialchars($view['saved_at'], ENT_QUOTES, 'UTF-8') ?></span>
+      <span class="meta-optional" data-pending-count>Chybí <?= (int) ($view['pending'] ?? 0) ?> dokončit</span>
+      <span class="meta-optional" data-save-status aria-live="polite">Čeká na změnu</span>
       <span><?= htmlspecialchars($view['user'] ?? '', ENT_QUOTES, 'UTF-8') ?></span>
       <form method="post" action="/robo/logout"><input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrf ?? '', ENT_QUOTES, 'UTF-8') ?>"><button class="button button-primary button-small">Odhlásit se</button></form>
     </div>
@@ -38,8 +40,10 @@ $nav = [
       <button class="icon-button" type="button" data-help-modal="page-help" aria-label="Nápověda k této stránce">i</button>
     </div>
     <nav class="nav-row" aria-label="Hlavní navigace">
-      <?php foreach ($nav as $path => $label): ?>
-        <a class="nav-link" href="/robo/<?= $path ?>"<?= ($view['page'] ?? '') === $path ? ' aria-current="page"' : '' ?>><?= $label ?></a>
+      <?php foreach ($nav as $item): ?>
+        <?php if ($administrator || in_array($item['permission'], $permissions, true)): ?>
+        <a class="nav-link" href="/robo/<?= htmlspecialchars($item['path'], ENT_QUOTES, 'UTF-8') ?>"<?= ($view['page'] ?? '') === $item['path'] ? ' aria-current="page"' : '' ?>><?= htmlspecialchars($item['label'], ENT_QUOTES, 'UTF-8') ?></a>
+        <?php endif; ?>
       <?php endforeach; ?>
     </nav>
   </header>

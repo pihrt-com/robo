@@ -31,7 +31,7 @@ button { cursor: pointer; }
 .nav-row { display: flex; justify-content: center; gap: 0; border-top: 1px dashed var(--ink); }
 .nav-link { min-width: 162px; padding: .8rem 1rem; color: var(--ink); background: #d4dae3; border: var(--line); border-bottom: 0; text-align: center; font-weight: 800; text-decoration: none; }
 .nav-link[aria-current="page"], .nav-link:hover { color: var(--white); background: var(--ink); }
-.app-main { width: min(1600px, 100%); margin: 0 auto; padding: clamp(.7rem, 1.35vw, 1.35rem); }
+.app-main { width: min(1780px, 100%); margin: 0 auto; padding: clamp(.85rem, 1.8vw, 2rem); }
 
 .button { display: inline-flex; align-items: center; justify-content: center; min-height: 2.35rem; padding: .45rem .9rem; border: var(--line); color: var(--ink); background: #eff3e8; font-weight: 800; text-transform: uppercase; text-decoration: none; }
 .button:hover { filter: brightness(.92); }
@@ -48,6 +48,9 @@ button { cursor: pointer; }
 .status-warning { background: #ffc400; color: #9c0000; font-weight: 800; }
 .status-error { background: #ffdad7; color: #960000; }
 .status-ok { background: #dce8d4; color: #244814; }
+.notice { margin: 0; padding: .65rem .8rem; border: var(--line); font-weight: 700; }
+.notice-success { color: #244814; background: #dce8d4; }
+.notice-error { color: #960000; background: #ffdad7; }
 
 .login-page { display: grid; min-height: 100vh; place-items: center; padding: 1.5rem; background: var(--header); }
 .login-card { width: min(570px, 100%); border: 3px solid var(--ink); background: var(--page); padding: clamp(1rem, 5vw, 2.4rem); text-align: center; }
@@ -82,11 +85,13 @@ button { cursor: pointer; }
 .best-time { color: var(--white); background: var(--green); font-weight: 800; }
 .progress-mark { color: var(--green); font-weight: 800; }
 
-.admin-grid { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(360px, .92fr); align-items: start; gap: 1rem; }
+.admin-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(420px, .9fr); align-items: start; gap: 1.35rem 2.25rem; }
+.admin-grid > .notice { grid-column: 1 / -1; }
+.admin-grid > div { min-width: 0; }
 .settings-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .35rem .8rem; padding: .15rem 0 .65rem; }
 .settings-link { color: var(--ink); font-size: clamp(1rem, 1.7vw, 1.2rem); font-weight: 800; text-decoration: none; }
 .settings-link:hover { color: var(--orange); text-decoration: underline; }
-.action-card { margin-bottom: .8rem; }
+.action-card { margin-bottom: 1.25rem; padding: 1rem; border: var(--line); background: rgba(255,255,255,.22); }
 .action-card h2 { margin: 0 0 .35rem; color: #9c9c9c; font-size: 1.15rem; }
 .action-list { max-height: 180px; overflow: auto; background: var(--white); border: var(--line); }
 .action-list > * { padding: .5rem .7rem; border-bottom: 1px solid #ddd; }
@@ -116,7 +121,7 @@ dialog::backdrop { background: rgba(0,0,0,.55); }
   .brand-row .icon-button { grid-column: 2; grid-row: 1; }
   .nav-row { justify-content: flex-start; overflow-x: auto; }
   .nav-link { min-width: 136px; }
-  .admin-grid { grid-template-columns: 1fr; gap: .6rem; }
+  .admin-grid { grid-template-columns: 1fr; gap: .75rem; }
 }
 @media (max-width: 620px) {
   .app-main { padding: .75rem; }

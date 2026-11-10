@@ -4,6 +4,20 @@
   const longPressMs = 650;
   let longPressTimer;
 
+  function setSaveStatus(state) {
+    const status = document.querySelector("[data-save-status]");
+    if (!status) return;
+    if (state === "saving") status.textContent = "Ukládám…";
+    else if (state === "saved") status.textContent = `Uloženo ${new Intl.DateTimeFormat("cs-CZ", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date())}`;
+    else if (state === "error") status.textContent = "Uložení se nezdařilo";
+    else status.textContent = "Čeká na změnu";
+  }
+
+  function setPendingCount(value) {
+    const pending = document.querySelector("[data-pending-count]");
+    if (pending && Number.isInteger(value) && value >= 0) pending.textContent = `Chybí ${value} dokončit`;
+  }
+
   function openModal(id) {
     const dialog = document.getElementById(id);
     if (dialog && typeof dialog.showModal === "function") dialog.showModal();
@@ -14,13 +28,22 @@
     const row = element.closest("[data-team-id]");
     const csrf = document.querySelector('input[name="_csrf"]')?.value;
     if (!panel || !row || !csrf) return;
-    const response = await fetch(panel.dataset.endpoint, {
-      method: "POST",
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/json", "X-CSRF-Token": csrf, Accept: "application/json" },
-      body: JSON.stringify({ team_id: Number(row.dataset.teamId), field, value }),
-    });
-    if (!response.ok) throw new Error("Uložení se nezdařilo. Obnovte stránku a zkuste akci znovu.");
+    setSaveStatus("saving");
+    try {
+      const response = await fetch(panel.dataset.endpoint, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json", "X-CSRF-Token": csrf, Accept: "application/json" },
+        body: JSON.stringify({ team_id: Number(row.dataset.teamId), field, value }),
+      });
+      if (!response.ok) throw new Error("Uložení se nezdařilo. Obnovte stránku a zkuste akci znovu.");
+      const payload = await response.json();
+      setPendingCount(payload.pending);
+      setSaveStatus("saved");
+    } catch (error) {
+      setSaveStatus("error");
+      throw error;
+    }
   }
 
   document.addEventListener("click", (event) => {
@@ -151,7 +174,7 @@
       tr.append(tableCell(row.best_time));
       tr.append(tableCell(Number(row.did_not_stop) ? row.stop_penalty : ""));
       tr.append(tableCell(row.technical_penalty || ""));
-      tr.append(tableCell(row.total_time, "best-time"));
+      tr.append(tableCell(row.total_time, row.total_time ? "best-time" : ""));
       tr.append(tableCell(row.rank, "display-rank"));
       fragment.append(tr);
     });

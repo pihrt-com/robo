@@ -25,6 +25,10 @@ Před uložením `config/local.php` instalátor ověří, že právě vytvořen�
 
 Správce má funkční obrazovky pro aktuální ročník a historii, lokalizované texty stránek, nastavení penalizací, uživatele a role, správu týmů, kontrolovaný import seznamu týmů z XLSX, auditní záznamy a odblokování přístupů. Změny těchto obrazovek se zapisují do databáze a do auditu.
 
+Každá role vidí jen stránky, které může obsluhovat. Technická přejímka vidí pouze svoji tabulku, dráha 1 pouze liché týmy na první dráze a dráha 2 pouze sudé týmy na druhé dráze. Přímý pokus o otevření zakázané stránky vrátí běžnou stránku s odepřeným přístupem; rozhraní API vrací odpověď JSON pouze pro JavaScriptové požadavky.
+
+Záhlaví ukazuje skutečný počet týmů a počet rozpracovaných kontrol nebo jízd. Po načtení čeká na změnu, během zápisu ukazuje ukládání a po potvrzení serverem čas posledního uložení. Technické změny a změny jízd zapisují auditní událost s týmem, polem a původní i novou hodnotou.
+
 Aktualizace v nabídce Systém ověří nejnovější veřejné vydání `pihrt-com/robo`. Instalace aktualizace přijme jen asset `robo-update.zip` se souborem `VERSION`, jehož verze odpovídá tagu, a se SHA-256 zveřejněným GitHubem. Aktualizátor kontroluje HTTPS, podpis otisku souboru, cesty v ZIPu a před zápisem uchová obnovení změněných souborů. `config/local.php` se nikdy nenahrazuje.
 
 Export pro Playoff obsahuje list `Pojmenování týmů` a přesně sloupce `ID týmu`, `Škola / adresa školy`, `Jméno soutěžícího` a `Nejlepší čas jízdy`. Stávající Playoff tento seznam načte, ale automatické nasazení 24 týmů do pavouka bude vyžadovat navazující změnu v projektu Playoff.

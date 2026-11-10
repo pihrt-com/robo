@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.1 - 2026-11-10
+
+### Fixed
+
+- `GitHub/robo`: navigace se řídí oprávněním role; technická přejímka vidí pouze vlastní stránku a přímý zakázaný odkaz již nezobrazuje technickou JSON odpověď.
+- `GitHub/robo`: záhlaví počítá týmy a rozpracované kontroly nebo jízdy z uložených dat, průběžně ukazuje čekání, ukládání a potvrzený čas zápisu.
+- `GitHub/robo`: každá změna technické kontroly nebo jízdy vytváří auditní záznam s původní a novou hodnotou.
+- `GitHub/robo`: celkové pořadí nebarví prázdný výsledný čas zeleně a tým bez výsledku nezobrazuje pořadí `0`.
+- `GitHub/robo`: administrace udržuje vlastní rozložení i po zobrazení informační hlášky a pracovní plocha využívá větší šířku.
+
 ## 0.2.0 - 2026-11-10
 
 ### Added

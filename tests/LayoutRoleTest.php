@@ -15,6 +15,14 @@ final class LayoutRoleTest
 
         $admin = self::render(['role_code' => 'administrator', 'permissions' => ['*'], 'page' => 'system']);
         self::assert(str_contains($admin, 'href="/robo/system"'), 'Administrator must see system navigation.');
+        self::assert(!str_contains($admin, 'Týmů 16'), 'System page must not show work counters.');
+
+        $systemFallback = self::render(['page' => 'system']);
+        self::assert(str_contains($systemFallback, 'href="/robo/track-1"'), 'System page fallback must retain administrator navigation.');
+
+        $technicalFallback = self::render(['page' => 'technical']);
+        self::assert(str_contains($technicalFallback, 'href="/robo/technical"'), 'Technical fallback must retain technical navigation.');
+        self::assert(!str_contains($technicalFallback, 'href="/robo/system"'), 'Technical fallback must not show system navigation.');
     }
 
     private static function render(array $role): string

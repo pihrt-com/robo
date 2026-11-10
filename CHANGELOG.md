@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.4 - 2026-11-10
+
+### Fixed
+
+- `GitHub/robo`: stránka Systém vždy zobrazí úplnou administrátorskou navigaci i při neúplném předání role do šablony.
+- `GitHub/robo`: záhlaví systému a pořadí nezobrazuje pracovní počítadla týmů, rozpracovaných úkonů ani stav ukládání; tyto údaje zůstávají pouze u technické přejímky a drah.
+
 ## 0.2.3 - 2026-11-10
 
 ### Fixed

@@ -13,6 +13,19 @@ $nav = [
 ];
 $permissions = is_array($view['permissions'] ?? null) ? $view['permissions'] : [];
 $administrator = ($view['role_code'] ?? '') === 'administrator' || in_array('*', $permissions, true);
+$page = (string) ($view['page'] ?? '');
+if (!$administrator && $permissions === []) {
+    $permissions = match ($page) {
+        'technical' => ['technical.view'],
+        'track-1' => ['track_1.view'],
+        'track-2' => ['track_2.view'],
+        'standings' => ['results.view'],
+        'system' => ['*'],
+        default => [],
+    };
+    $administrator = in_array('*', $permissions, true);
+}
+$workPage = in_array($page, ['technical', 'track-1', 'track-2'], true);
 ?>
 <!doctype html>
 <html lang="<?= htmlspecialchars($view['locale'] ?? 'cs', ENT_QUOTES, 'UTF-8') ?>">
@@ -26,11 +39,13 @@ $administrator = ($view['role_code'] ?? '') === 'administrator' || in_array('*',
 <body>
 <div class="app-shell">
   <header class="app-header">
-    <div class="meta-row">
+    <div class="meta-row<?= $workPage ? '' : ' meta-row-static' ?>">
       <strong data-current-date>--.--.----</strong><strong data-current-time>--:--:--</strong>
+      <?php if ($workPage): ?>
       <span>Týmů <?= (int) ($view['teams'] ?? 0) ?></span>
       <span class="meta-optional" data-pending-count>Chybí <?= (int) ($view['pending'] ?? 0) ?> dokončit</span>
       <span class="meta-optional" data-save-status aria-live="polite">Čeká na změnu</span>
+      <?php endif; ?>
       <span><?= htmlspecialchars($view['user'] ?? '', ENT_QUOTES, 'UTF-8') ?></span>
       <form method="post" action="/robo/logout"><input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrf ?? '', ENT_QUOTES, 'UTF-8') ?>"><button class="button button-primary button-small">Odhlásit se</button></form>
     </div>
@@ -42,7 +57,7 @@ $administrator = ($view['role_code'] ?? '') === 'administrator' || in_array('*',
     <nav class="nav-row" aria-label="Hlavní navigace">
       <?php foreach ($nav as $item): ?>
         <?php if ($administrator || in_array($item['permission'], $permissions, true)): ?>
-        <a class="nav-link" href="/robo/<?= htmlspecialchars($item['path'], ENT_QUOTES, 'UTF-8') ?>"<?= ($view['page'] ?? '') === $item['path'] ? ' aria-current="page"' : '' ?>><?= htmlspecialchars($item['label'], ENT_QUOTES, 'UTF-8') ?></a>
+        <a class="nav-link" href="/robo/<?= htmlspecialchars($item['path'], ENT_QUOTES, 'UTF-8') ?>"<?= $page === $item['path'] ? ' aria-current="page"' : '' ?>><?= htmlspecialchars($item['label'], ENT_QUOTES, 'UTF-8') ?></a>
         <?php endif; ?>
       <?php endforeach; ?>
     </nav>

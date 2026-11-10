@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.2 - 2026-11-10
+
+### Fixed
+
+- `GitHub/robo`: přibyla nová chráněná oprava `cache-repair.php`, která samostatně zneplatní uložené PHP soubory záhlaví a navigace; pokud ji hosting odmítne, zobrazí konkrétní pokyn k restartu PHP místo návratu na výchozí formulář.
+
 ## 0.3.1 - 2026-11-10
 
 ### Fixed

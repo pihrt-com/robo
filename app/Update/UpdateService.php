@@ -152,8 +152,8 @@ final class UpdateService
             CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_HTTPHEADER => ['Accept: application/octet-stream', 'User-Agent: pihrt-com-robo-updater'],
             CURLOPT_NOPROGRESS => false,
-            CURLOPT_PROGRESSFUNCTION => static function (int $downloadSize, int $downloaded) use (&$received): int {
-                $received = $downloaded;
+            CURLOPT_PROGRESSFUNCTION => static function (mixed $_handle, float $downloadSize, float $downloaded, float $_uploadSize, float $_uploaded) use (&$received): int {
+                $received = (int) $downloaded;
                 return $downloaded > self::MAX_ARCHIVE_BYTES ? 1 : 0;
             },
         ]);

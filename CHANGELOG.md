@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.2 - 2026-11-10
+
+### Fixed
+
+- `GitHub/robo`: aktualizátor používá správný podpis cURL callbacku pro PHP 8, takže stažení aktualizačního souboru neskončí chybou typu argumentu a bezpečným návratem souborů.
+
 ## 0.2.1 - 2026-11-10
 
 ### Fixed

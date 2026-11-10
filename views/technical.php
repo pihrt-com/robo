@@ -14,4 +14,4 @@ ob_start();
 <?php
 $content = ob_get_clean();
 $help = '<p>Vyberte každou ze tří kontrolních podmínek. První stisk změní stav na zelený, druhý na červený a třetí jej vrátí do bílého nevyplněného stavu. Pokud je alespoň jedna podmínka červená, systém dopočítá technickou penalizaci.</p>';
-require __DIR__.'/layout.php';
+require __DIR__.'/app-shell-v042.php';

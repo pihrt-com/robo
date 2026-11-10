@@ -23,4 +23,4 @@
     </table>
   </div>
 </section>
-<?php $content=ob_get_clean(); $help='<p>Tabulka obsahuje veškeré pojmenované řetězce rozhraní. Výběrem stránky zmenšíte seznam; odkaz u každého řádku otevře příslušnou obrazovku v nové kartě.</p>'; require __DIR__.'/layout.php';
+<?php $content=ob_get_clean(); $help='<p>Tabulka obsahuje veškeré pojmenované řetězce rozhraní. Výběrem stránky zmenšíte seznam; odkaz u každého řádku otevře příslušnou obrazovku v nové kartě.</p>'; require __DIR__.'/app-shell-v042.php';

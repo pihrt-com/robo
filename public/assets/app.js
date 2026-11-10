@@ -214,19 +214,27 @@
     return cell;
   }
 
+  function checkpointCell(value, className = "") {
+    const cell = document.createElement("td");
+    if (className) cell.className = className;
+    const count = Number(value || 0);
+    cell.textContent = count > 0 ? `${count}x` : "";
+    return cell;
+  }
+
   function renderQualificationRows(body, rows) {
     const fragment = document.createDocumentFragment();
     rows.forEach((row) => {
       const tr = document.createElement("tr");
       tr.dataset.teamId = String(row.team_id);
-      tr.append(tableCell(row.number));
+      tr.append(tableCell(row.number, "display-team"));
       ["checkpoint_1", "checkpoint_2", "checkpoint_3", "checkpoint_4", "checkpoint_5", "checkpoint_6", "finish"].forEach((key) => {
-        tr.append(tableCell(Number(row[key] || 0) || "", row.furthest_checkpoint === key ? "progress-mark" : ""));
+        tr.append(checkpointCell(row[key], row.furthest_checkpoint === key ? "progress-mark" : ""));
       });
       tr.append(tableCell(row.best_time));
       tr.append(tableCell(Number(row.did_not_stop) ? row.stop_penalty : ""));
       tr.append(tableCell(row.technical_penalty || ""));
-      tr.append(tableCell(row.total_time, row.total_time ? "best-time" : ""));
+      tr.append(tableCell(row.total_time));
       tr.append(tableCell(row.rank, "display-rank"));
       fragment.append(tr);
     });
@@ -237,7 +245,7 @@
     const fragment = document.createDocumentFragment();
     rows.forEach((row) => {
       const tr = document.createElement("tr");
-      tr.append(tableCell(row.number), tableCell(row.school || ""), tableCell(row.members || ""), tableCell(row.rank, "display-rank"));
+      tr.append(tableCell(row.number, "display-team"), tableCell(row.school || ""), tableCell(row.members || ""), tableCell(row.rank, "display-rank"));
       fragment.append(tr);
     });
     body.replaceChildren(fragment);

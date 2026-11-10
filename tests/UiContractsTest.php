@@ -35,6 +35,14 @@ final class UiContractsTest
         $stylesheet = (string) file_get_contents(dirname(__DIR__) . '/public/assets/app.css');
         self::assert(str_contains($javascript, 'if (field === "is_confirmed")'), 'A regular checkpoint response must not restore missing placeholders.');
         self::assert(str_contains($stylesheet, '.best-time .team-button { color: var(--white); }'), 'The best-time button text must remain white.');
+
+        $standings = self::render('standings', ['rows' => [[
+            'team_id' => 3, 'number' => 6, 'school' => 'Škola', 'members' => 'Jméno', 'checkpoint_1' => 6, 'furthest_checkpoint' => 'checkpoint_1', 'best_time' => 1000, 'did_not_stop' => 0, 'technical_penalty' => 0, 'total_time' => 1000, 'rank' => 1,
+        ]]]);
+        self::assert(str_contains($standings, 'class="display-team">6</td>'), 'Standings team numbers must use the same size treatment as rank.');
+        self::assert(str_contains($standings, 'class="progress-mark">6x</td>'), 'Standings checkpoint counts must include the x suffix.');
+        self::assert(str_contains($standings, 'class="form-actions standings-actions"'), 'Standings export actions must keep spacing above the table.');
+        self::assert(!str_contains($standings, 'class="best-time">1000</td>'), 'Standings total time must not use the green highlight.');
     }
 
     private static function render(string $viewName, array $variables): string

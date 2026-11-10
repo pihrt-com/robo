@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.2 - 2026-11-10
+
+### Changed
+
+- Celkové pořadí zobrazuje počty průjezdních bodů s příponou `x`, číslo týmu má stejnou velikost jako pořadí a mezi exportními tlačítky a tabulkou je mezera.
+- výsledný čas v Celkovém pořadí používá stejné pozadí a font jako ostatní datové buňky.
+
+### Fixed
+
+- všech 11 přihlášených obrazovek načítá záhlaví z nového souboru `app-shell-v042.php`, takže stará zkompilovaná kopie `layout.php` v PHP OPcache již nemůže skrýt přihlášeného uživatele, jeho roli ani pět tlačítek hlavní navigace.
+- automatické obnovení Celkového pořadí zachovává příponu `x`, velikost týmu a nezvýrazněný výsledný čas.
+
 ## 0.4.1 - 2026-11-10
 
 ### Changed

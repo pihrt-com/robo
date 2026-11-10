@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 - 2026-11-10
+
+### Fixed
+
+- `GitHub/robo`: instalátor před vytvořením trvalé konfigurace ověří, že založený správce je aktivní, má roli správce a jeho zadané heslo lze ověřit.
+
 ## 0.1.0 - 2026-11-10
 
 ### Added

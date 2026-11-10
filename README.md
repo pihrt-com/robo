@@ -12,6 +12,8 @@ ROBO je webový systém pro organizaci robotické soutěže. Obslouží instalac
 
 Instalátor vytvoří databázovou strukturu, výchozí role, první ročník, šestnáct týmů, dvě výchozí penalizace a účet správce. Soubor `config/local.php` brání dalšímu spuštění instalace.
 
+Před uložením `config/local.php` instalátor ověří, že právě vytvořený účet správce je aktivní, má správnou roli a přijme zadané heslo. Pokud tato kontrola selže, instalace se neoznačí jako dokončená.
+
 ## Funkce první verze
 
 - bezpečné přihlášení s hashovanými hesly, CSRF tokeny, bezpečnými relacemi, rolovým oprávněním a omezením pokusů z IP adresy;

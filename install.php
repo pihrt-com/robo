@@ -52,6 +52,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo = new PDO($dsn, $dbUser, $dbPassword, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_EMULATE_PREPARES => false]);
             (new SchemaInstaller($pdo, __DIR__ . '/migrations'))->install();
             installer_seed($pdo, $admin, $adminPassword);
+            $verification = $pdo->prepare('SELECT password_hash, role_code, is_active FROM users WHERE username = :username LIMIT 1');
+            $verification->execute(['username' => $admin]);
+            $createdAdmin = $verification->fetch();
+            if ($createdAdmin === false || $createdAdmin['role_code'] !== 'administrator' || (int) $createdAdmin['is_active'] !== 1 || !password_verify($adminPassword, (string) $createdAdmin['password_hash'])) {
+                throw new RuntimeException('Vytvořený účet správce nelze ověřit.');
+            }
             installer_config($configFile, $dsn, $dbUser, $dbPassword, !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
             $done = true;
         } catch (Throwable) { $error = 'Instalaci se nepodařilo dokončit. Ověřte údaje databáze, oprávnění databázového účtu a oprávnění složky config.'; }

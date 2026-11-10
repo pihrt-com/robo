@@ -51,6 +51,19 @@ final class RateLimiter
         $statement->execute(['ip' => $ipAddress]);
     }
 
+    /** @return list<array<string, mixed>> */
+    public function activeBlocks(DateTimeImmutable $now): array
+    {
+        $statement = $this->pdo->prepare('SELECT ip_address, failure_count, locked_until FROM login_rate_limits WHERE locked_until IS NOT NULL AND locked_until > :now ORDER BY locked_until DESC');
+        $statement->execute(['now' => $now->format('Y-m-d H:i:s')]);
+        return $statement->fetchAll();
+    }
+
+    public function clearAll(): int
+    {
+        return $this->pdo->exec('DELETE FROM login_rate_limits') ?: 0;
+    }
+
     /** @return array<string, mixed>|null */
     private function find(string $ipAddress): ?array
     {

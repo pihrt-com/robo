@@ -3,6 +3,7 @@
 /** @var string $content */
 /** @var array{year?: string, locale?: string, user?: string, teams?: int, pending?: int, saved_at?: string, page?: string} $view */
 $view = $view ?? [];
+$localeLabel = ($view['locale'] ?? 'cs') === 'cs' ? 'CZ' : strtoupper((string) ($view['locale'] ?? 'en'));
 $nav = [
     'technical' => 'TECHNICKÁ',
     'track-1' => 'DRÁHA 1',
@@ -32,7 +33,7 @@ $nav = [
       <form method="post" action="/robo/logout"><input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrf ?? '', ENT_QUOTES, 'UTF-8') ?>"><button class="button button-primary button-small">Odhlásit se</button></form>
     </div>
     <div class="brand-row">
-      <a class="brand" href="/robo/">ROBO <?= htmlspecialchars($view['year'] ?? '', ENT_QUOTES, 'UTF-8') ?> <?= strtoupper(htmlspecialchars($view['locale'] ?? 'CZ', ENT_QUOTES, 'UTF-8')) ?></a>
+      <a class="brand" href="/robo/">ROBO <?= htmlspecialchars($view['year'] ?? '', ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars($localeLabel, ENT_QUOTES, 'UTF-8') ?></a>
       <h1 class="page-title"><?= htmlspecialchars($title ?? '', ENT_QUOTES, 'UTF-8') ?></h1>
       <button class="icon-button" type="button" data-help-modal="page-help" aria-label="Nápověda k této stránce">i</button>
     </div>

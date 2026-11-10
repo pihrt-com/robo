@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.0 - 2026-11-10
+
+### Added
+
+- `GitHub/robo`: funkční správa ročníků, lokalizovaných textů, penalizací, týmů, uživatelů, rolí, importu XLSX a auditních záznamů.
+- `GitHub/robo`: bezpečný aktualizátor z veřejných GitHub Releases s ověřením HTTPS, SHA-256, obsahu ZIPu, verze a zachováním `config/local.php`.
+- `GitHub/robo`: lokální integrační test MariaDB pro instalaci, vytvoření správce, přihlášení a zápis nastavení.
+
+### Fixed
+
+- `GitHub/robo`: informační ikona má samostatný prostor vedle nadpisu; administrace a tabulky využívají širší pracovní plochu.
+- `GitHub/robo`: průběžné výsledky se po změně dat přepíšou bez obnovy stránky a týmy bez výsledku nemají přidělené pořadí.
+- `GitHub/robo`: záhlaví počítá skutečný počet týmů uložených v aktivním ročníku.
+
 ## 0.1.1 - 2026-11-10
 
 ### Fixed

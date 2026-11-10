@@ -74,8 +74,10 @@ final class RankingService
             return $countOrder !== 0 ? $countOrder : $left['team_number'] <=> $right['team_number'];
         });
 
-        foreach ($result as $index => &$row) {
-            $row['rank'] = $index + 1;
+        $rank = 0;
+        foreach ($result as &$row) {
+            $hasResult = $row['has_valid_time'] === 1 || $row['furthest_checkpoint'] > 0;
+            $row['rank'] = $hasResult ? ++$rank : null;
         }
         unset($row);
         return $result;

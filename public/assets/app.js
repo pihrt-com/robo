@@ -132,6 +132,68 @@
   updateClock();
   window.setInterval(updateClock, 1000);
 
+  function tableCell(value, className = "") {
+    const cell = document.createElement("td");
+    if (className) cell.className = className;
+    cell.textContent = value === null || value === undefined || value === "" ? "—" : String(value);
+    return cell;
+  }
+
+  function renderQualificationRows(body, rows) {
+    const fragment = document.createDocumentFragment();
+    rows.forEach((row) => {
+      const tr = document.createElement("tr");
+      tr.dataset.teamId = String(row.team_id);
+      tr.append(tableCell(row.number));
+      ["checkpoint_1", "checkpoint_2", "checkpoint_3", "checkpoint_4", "checkpoint_5", "checkpoint_6", "finish"].forEach((key) => {
+        tr.append(tableCell(Number(row[key] || 0) || "", row.furthest_checkpoint === key ? "progress-mark" : ""));
+      });
+      tr.append(tableCell(row.best_time));
+      tr.append(tableCell(Number(row.did_not_stop) ? row.stop_penalty : ""));
+      tr.append(tableCell(row.technical_penalty || ""));
+      tr.append(tableCell(row.total_time, "best-time"));
+      tr.append(tableCell(row.rank, "display-rank"));
+      fragment.append(tr);
+    });
+    body.replaceChildren(fragment);
+  }
+
+  function renderParticipantsRows(body, rows) {
+    const fragment = document.createDocumentFragment();
+    rows.forEach((row) => {
+      const tr = document.createElement("tr");
+      tr.append(tableCell(row.number), tableCell(row.school || ""), tableCell(row.members || ""), tableCell(row.rank, "display-rank"));
+      fragment.append(tr);
+    });
+    body.replaceChildren(fragment);
+  }
+
+  function renderPublicRows(body, rows) {
+    const fragment = document.createDocumentFragment();
+    rows.forEach((row) => {
+      const tr = document.createElement("tr");
+      const finalTime = row.total_time ? `${row.total_time} ms` : "—";
+      tr.append(tableCell(row.rank, "display-rank"), tableCell(row.number), tableCell(row.school || ""), tableCell(row.members || ""), tableCell(finalTime));
+      fragment.append(tr);
+    });
+    body.replaceChildren(fragment);
+  }
+
+  document.addEventListener("robo:data-refresh", (event) => {
+    const root = event.target;
+    const rows = event.detail?.rows;
+    if (!Array.isArray(rows)) return;
+    if (root.matches(".display-page")) {
+      const publicBody = root.querySelector(".data-table tbody");
+      if (publicBody) renderPublicRows(publicBody, rows);
+      return;
+    }
+    if (root.dataset.page !== "standings") return;
+    const bodies = root.querySelectorAll(".data-table tbody");
+    if (bodies[0]) renderQualificationRows(bodies[0], rows);
+    if (bodies[1]) renderParticipantsRows(bodies[1], rows);
+  });
+
   document.querySelectorAll("[data-endpoint][data-refresh-ms]").forEach((root) => {
     const interval = Number(root.dataset.refreshMs);
     const endpoint = root.dataset.endpoint;

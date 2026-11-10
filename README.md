@@ -5,7 +5,7 @@ ROBO je webový systém pro organizaci robotické soutěže. Obslouží instalac
 ## První instalace
 
 1. Nakopírujte obsah repozitáře do adresáře webu, například `https://pihrt.com/robo/`.
-2. Zajistěte PHP 8.2 nebo novější s rozšířeními `pdo_mysql` a `zip`, databázi MySQL nebo MariaDB a zapnuté HTTPS.
+2. Zajistěte PHP 8.2 nebo novější s rozšířeními `pdo_mysql`, `zip` a `curl`, databázi MySQL nebo MariaDB a zapnuté HTTPS.
 3. Nechte webový server přepisovat požadavky na `index.php`; pravidla pro Apache jsou v `.htaccess`.
 4. Otevřete `https://pihrt.com/robo/install.php`, vyplňte správce a přístup k prázdné databázi.
 5. Po úspěšném přihlášení ověřte, že vytvořený soubor `config/local.php` není veřejně přístupný, a na serveru odstraňte `install.php`.
@@ -14,7 +14,7 @@ Instalátor vytvoří databázovou strukturu, výchozí role, první ročník, �
 
 Před uložením `config/local.php` instalátor ověří, že právě vytvořený účet správce je aktivní, má správnou roli a přijme zadané heslo. Pokud tato kontrola selže, instalace se neoznačí jako dokončená.
 
-## Funkce první verze
+## Funkce verze 0.2.0
 
 - bezpečné přihlášení s hashovanými hesly, CSRF tokeny, bezpečnými relacemi, rolovým oprávněním a omezením pokusů z IP adresy;
 - technická přejímka se třemi měnitelnými stavy: bílá = nezadáno, zelená = prošlo, červená = neprošlo;
@@ -23,11 +23,15 @@ Před uložením `config/local.php` instalátor ověří, že právě vytvořen�
 - veřejná obrazovka `/robo/public` s obnovou dat na pozadí;
 - export úplných výsledků do XLSX se dvěma listy a samostatný XLSX kompatibilní s aktuálním importem Playoff.
 
+Správce má funkční obrazovky pro aktuální ročník a historii, lokalizované texty stránek, nastavení penalizací, uživatele a role, správu týmů, kontrolovaný import seznamu týmů z XLSX, auditní záznamy a odblokování přístupů. Změny těchto obrazovek se zapisují do databáze a do auditu.
+
+Aktualizace v nabídce Systém ověří nejnovější veřejné vydání `pihrt-com/robo`. Instalace aktualizace přijme jen asset `robo-update.zip` se souborem `VERSION`, jehož verze odpovídá tagu, a se SHA-256 zveřejněným GitHubem. Aktualizátor kontroluje HTTPS, podpis otisku souboru, cesty v ZIPu a před zápisem uchová obnovení změněných souborů. `config/local.php` se nikdy nenahrazuje.
+
 Export pro Playoff obsahuje list `Pojmenování týmů` a přesně sloupce `ID týmu`, `Škola / adresa školy`, `Jméno soutěžícího` a `Nejlepší čas jízdy`. Stávající Playoff tento seznam načte, ale automatické nasazení 24 týmů do pavouka bude vyžadovat navazující změnu v projektu Playoff.
 
 ## Ověření
 
-Před každou změnou spusťte PHP linter nad všemi soubory a `php tests/run.php`. Skutečný instalační test vyžaduje MariaDB/MySQL s ovladačem `pdo_mysql`; tento ovladač nebyl v lokálním testovacím PHP dostupný, proto je potřeba instalaci ověřit na cílovém hostingu před soutěží.
+Před každou změnou spusťte PHP linter nad všemi soubory, `php tests/run.php` a kontrolu syntaxe `node --check public/assets/app.js`. Ověření instalace, přihlášení a změn administrace proveďte proti skutečné MariaDB/MySQL s ovladačem `pdo_mysql`; test v tomto repozitáři se zapíná proměnnými `ROBO_INTEGRATION_DSN`, `ROBO_INTEGRATION_USER` a `ROBO_INTEGRATION_PASSWORD`.
 
 ## Budoucí moduly
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.1 - 2026-11-10
+
+### Fixed
+
+- `GitHub/robo`: aktualizátor po úspěšném nasazení obnoví PHP OPcache, takže se ihned načtou změněné šablony a řídicí soubory.
+- `GitHub/robo`: přibyla chráněná stránka `cache-refresh.php` pro jednorázové obnovení PHP OPcache na hostingu, kde po starší aktualizaci zůstala v paměti šablona záhlaví.
+
 ## 0.3.0 - 2026-11-10
 
 ### Added

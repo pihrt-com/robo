@@ -87,6 +87,7 @@ final class UpdateService
                 file_put_contents($work . '/journal.json', json_encode($journal, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT), LOCK_EX);
             }
             file_put_contents($projectRoot . '/VERSION', $release->version . PHP_EOL, LOCK_EX);
+            $this->refreshOpcache();
 
             return ['version' => $release->version, 'changed_files' => count($files), 'backup' => ''];
         } catch (\Throwable $exception) {
@@ -253,6 +254,13 @@ final class UpdateService
             if (preg_match('/^\\.robo-update-[a-f0-9]{24}$/', $entry) === 1) {
                 $this->deleteTree($projectRoot . '/' . $entry);
             }
+        }
+    }
+
+    private function refreshOpcache(): void
+    {
+        if (function_exists('opcache_reset')) {
+            @opcache_reset();
         }
     }
 }

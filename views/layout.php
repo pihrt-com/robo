@@ -4,15 +4,16 @@
 /** @var array{year?: string, locale?: string, user?: string, teams?: int, pending?: int, saved_at?: string, page?: string, role_code?: string, permissions?: list<string>} $view */
 $view = $view ?? [];
 $localeLabel = ($view['locale'] ?? 'cs') === 'cs' ? 'CZ' : strtoupper((string) ($view['locale'] ?? 'en'));
+$text = static fn (string $page, string $key, string $fallback): string => function_exists('ui_text') ? ui_text($page, $key, $fallback) : $fallback;
 $nav = [
-    ['path' => 'technical', 'label' => 'TECHNICKÁ', 'permission' => 'technical.view'],
-    ['path' => 'track-1', 'label' => 'DRÁHA 1', 'permission' => 'track_1.view'],
-    ['path' => 'track-2', 'label' => 'DRÁHA 2', 'permission' => 'track_2.view'],
-    ['path' => 'standings', 'label' => 'POŘADÍ', 'permission' => 'results.view'],
-    ['path' => 'system', 'label' => 'SYSTÉM', 'permission' => 'system.view'],
+    ['path' => 'technical', 'label' => $text('navigation', 'technical', 'TECHNICKÁ'), 'permission' => 'technical.view'],
+    ['path' => 'track-1', 'label' => $text('navigation', 'track_1', 'DRÁHA 1'), 'permission' => 'track_1.view'],
+    ['path' => 'track-2', 'label' => $text('navigation', 'track_2', 'DRÁHA 2'), 'permission' => 'track_2.view'],
+    ['path' => 'standings', 'label' => $text('navigation', 'standings', 'POŘADÍ'), 'permission' => 'results.view'],
+    ['path' => 'system', 'label' => $text('navigation', 'system', 'SYSTÉM'), 'permission' => 'system.view'],
 ];
 $permissions = is_array($view['permissions'] ?? null) ? $view['permissions'] : [];
-$administrator = ($view['role_code'] ?? '') === 'administrator' || in_array('*', $permissions, true);
+$administrator = ($view['role_code'] ?? '') === 'administrator' || in_array('*', $permissions, true) || in_array('system.view', $permissions, true);
 $page = (string) ($view['page'] ?? '');
 if (!$administrator && $permissions === []) {
     $permissions = match ($page) {
@@ -47,7 +48,7 @@ $workPage = in_array($page, ['technical', 'track-1', 'track-2'], true);
       <span class="meta-optional" data-save-status aria-live="polite">Čeká na změnu</span>
       <?php endif; ?>
       <span><?= htmlspecialchars($view['user'] ?? '', ENT_QUOTES, 'UTF-8') ?></span>
-      <form method="post" action="/robo/logout"><input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrf ?? '', ENT_QUOTES, 'UTF-8') ?>"><button class="button button-primary button-small">Odhlásit se</button></form>
+      <form method="post" action="/robo/logout"><input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrf ?? '', ENT_QUOTES, 'UTF-8') ?>"><button class="button button-primary button-small"><?= htmlspecialchars($text('navigation', 'logout', 'Odhlásit se'), ENT_QUOTES, 'UTF-8') ?></button></form>
     </div>
     <div class="brand-row">
       <a class="brand" href="/robo/">ROBO <?= htmlspecialchars($view['year'] ?? '', ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars($localeLabel, ENT_QUOTES, 'UTF-8') ?></a>

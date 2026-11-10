@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.0 - 2026-11-10
+
+### Added
+
+- `GitHub/robo`: nastavení textů obsahuje úplný katalog navigace, technické přejímky, drah, pořadí a správy systému v češtině i angličtině; filtruje podle stránky a každá položka obsahuje odkaz na její náhled.
+- `GitHub/robo`: README obsahuje pouze účel aplikace a její činnost; přibyly odznaky pro vydání, stažení a poslední změnu.
+
+### Fixed
+
+- `GitHub/robo`: navigace správce se zobrazí také tehdy, když serverová role obsahuje oprávnění `system.view`, ale nemá doslovný kód `administrator`.
+- `GitHub/robo`: aktualizátor po dokončení nebo chybě smaže vlastní pracovní adresář, před novým během odstraní zbytky starých pracovních adresářů a nikdy znovu nevloží odstraněný soubor `install.php`.
+
 ## 0.2.4 - 2026-11-10
 
 ### Fixed

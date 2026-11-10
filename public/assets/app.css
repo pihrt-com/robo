@@ -32,6 +32,10 @@ button { cursor: pointer; }
 .nav-row { display: flex; justify-content: center; gap: 0; border-top: 1px dashed var(--ink); }
 .nav-link { min-width: 162px; padding: .8rem 1rem; color: var(--ink); background: #d4dae3; border: var(--line); border-bottom: 0; text-align: center; font-weight: 800; text-decoration: none; }
 .nav-link[aria-current="page"], .nav-link:hover { color: var(--white); background: var(--ink); }
+.filter-row { display: flex; align-items: center; gap: .65rem; margin: 0 0 1rem; }
+.filter-row select { min-width: 17rem; }
+.page-preview-link { color: var(--green); font-weight: 800; }
+.page-preview-link:hover { color: var(--orange); }
 .app-main { width: min(1780px, 100%); margin: 0 auto; padding: clamp(.85rem, 1.8vw, 2rem); }
 
 .button { display: inline-flex; align-items: center; justify-content: center; min-height: 2.35rem; padding: .45rem .9rem; border: var(--line); color: var(--ink); background: #eff3e8; font-weight: 800; text-transform: uppercase; text-decoration: none; }

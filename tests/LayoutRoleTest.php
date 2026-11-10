@@ -20,6 +20,9 @@ final class LayoutRoleTest
         $systemFallback = self::render(['page' => 'system']);
         self::assert(str_contains($systemFallback, 'href="/robo/track-1"'), 'System page fallback must retain administrator navigation.');
 
+        $systemPermission = self::render(['role_code' => 'custom_system_role', 'permissions' => ['system.view'], 'page' => 'system']);
+        self::assert(str_contains($systemPermission, 'href="/robo/track-1"'), 'A role authorized for system administration must retain the complete navigation.');
+
         $technicalFallback = self::render(['page' => 'technical']);
         self::assert(str_contains($technicalFallback, 'href="/robo/technical"'), 'Technical fallback must retain technical navigation.');
         self::assert(!str_contains($technicalFallback, 'href="/robo/system"'), 'Technical fallback must not show system navigation.');

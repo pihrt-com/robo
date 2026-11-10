@@ -44,6 +44,7 @@ final class UpdateService
             throw new UpdateException('Server nemá rozšíření ZipArchive potřebné pro bezpečnou aktualizaci.');
         }
 
+        $this->cleanupStaleWorkspaces($projectRoot);
         $work = $projectRoot . '/.robo-update-' . bin2hex(random_bytes(12));
         $stage = $work . '/stage';
         $backup = $work . '/backup';
@@ -59,7 +60,7 @@ final class UpdateService
             foreach ($files as $relative) {
                 $source = $stage . '/' . $relative;
                 $target = $projectRoot . '/' . $relative;
-                if ($relative === 'config/local.php') {
+                if (self::isProtectedRuntimePath($relative)) {
                     continue;
                 }
                 $targetDirectory = dirname($target);
@@ -87,13 +88,21 @@ final class UpdateService
             }
             file_put_contents($projectRoot . '/VERSION', $release->version . PHP_EOL, LOCK_EX);
 
-            return ['version' => $release->version, 'changed_files' => count($files), 'backup' => $backup];
+            return ['version' => $release->version, 'changed_files' => count($files), 'backup' => ''];
         } catch (\Throwable $exception) {
             $this->rollback($projectRoot, $backup, $journal);
             throw $exception instanceof UpdateException ? $exception : new UpdateException('Aktualizace selhala a změněné soubory byly obnoveny.', 0, $exception);
         } finally {
-            $this->deleteTree($stage);
+            $this->deleteTree($work);
         }
+    }
+
+    /**
+     * Files created or deliberately removed on an installed server are never restored by an update archive.
+     */
+    public static function isProtectedRuntimePath(string $relative): bool
+    {
+        return in_array($relative, ['config/local.php', 'install.php'], true);
     }
 
     public static function assertSafeArchivePath(string $path): string
@@ -232,5 +241,18 @@ final class UpdateService
             $item->isDir() ? @rmdir($item->getPathname()) : @unlink($item->getPathname());
         }
         @rmdir($directory);
+    }
+
+    private function cleanupStaleWorkspaces(string $projectRoot): void
+    {
+        $entries = @scandir($projectRoot);
+        if (!is_array($entries)) {
+            return;
+        }
+        foreach ($entries as $entry) {
+            if (preg_match('/^\\.robo-update-[a-f0-9]{24}$/', $entry) === 1) {
+                $this->deleteTree($projectRoot . '/' . $entry);
+            }
+        }
     }
 }

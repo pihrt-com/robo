@@ -17,6 +17,9 @@ final class UpdateContractsTest
         self::assert(UpdateService::assertSafeArchivePath('app/Update/Version.php') === 'app/Update/Version.php', 'Safe paths must be accepted.');
         self::assertThrows(static fn () => UpdateService::assertSafeArchivePath('../config/local.php'), 'Traversal path must be rejected.');
         self::assertThrows(static fn () => UpdateService::assertSafeArchivePath('config/local.php'), 'Persistent configuration must be protected.');
+        self::assert(UpdateService::isProtectedRuntimePath('config/local.php'), 'Persistent configuration must not be replaced by an update.');
+        self::assert(UpdateService::isProtectedRuntimePath('install.php'), 'A removed installer must not be restored by an update.');
+        self::assert(!UpdateService::isProtectedRuntimePath('index.php'), 'Application files must remain updateable.');
     }
 
     private static function assertThrows(callable $callback, string $message): void

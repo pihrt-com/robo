@@ -55,7 +55,7 @@ Server musí poskytovat PHP 8.2 nebo novější, PDO s ovladačem MySQL, rozší
 
 Správce může ověřit nejnovější veřejné vydání na GitHubu a nainstalovat pouze ověřený soubor `robo-update.zip`. Aktualizátor kontroluje novější verzi, HTTPS adresu, SHA-256, bezpečné cesty v archivu a zachovává `config/local.php`. Při neúspěchu obnoví původní změněné soubory.
 
-Úplná záloha obsahuje databázi, účty, nastavení, místní konfiguraci a spravované soubory aplikace. Archiv je chráněn heslem a šifrováním AES-256. Obnova před nahrazením současných dat ověřuje heslo, strukturu archivu, velikosti a kontrolní součty.
+Úplná záloha obsahuje databázi, účty, nastavení, místní konfiguraci a spravované soubory aplikace. Archiv je chráněn heslem a šifrováním AES-256. Obnova před nahrazením současných dat ověřuje heslo, strukturu archivu, velikosti a kontrolní součty. Každou uloženou zálohu může správce samostatně odstranit po potvrzení; smazání se zaznamená do systémového logu.
 
 ## Bezpečnost a audit
 
@@ -67,5 +67,5 @@ Správa systému obsahuje obrazovku Bezpečnost a audit s počty neúspěšných
 
 Podrobný přehled vydání a oprav je v souboru [CHANGELOG.md](CHANGELOG.md).
 
-Dokumentace odpovídá verzi 0.5.1 a byla ověřena 2026-11-12 pro pracovní složku `C:\Users\marti\OneDrive\Dokumenty\GitHub\robo`.
+Dokumentace odpovídá verzi 0.5.2 a byla ověřena 2026-11-12 pro pracovní složku `C:\Users\marti\OneDrive\Dokumenty\GitHub\robo`.
 

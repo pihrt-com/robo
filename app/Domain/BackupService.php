@@ -89,6 +89,14 @@ final class BackupService
         return $path;
     }
 
+    public function delete(string $projectRoot, string $filename): void
+    {
+        $path = $this->path($projectRoot, $filename);
+        if (!unlink($path)) {
+            throw new RuntimeException('Zálohu nelze smazat.');
+        }
+    }
+
     /** @return array{version:string,tables:int,files:int} */
     public function restore(string $projectRoot, string $archive, string $password): array
     {

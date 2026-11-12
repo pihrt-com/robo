@@ -21,6 +21,7 @@ final class BackupContractsTest
         $rootFiles = $reflection->getConstant('ROOT_FILES');
         self::assert(is_array($directories) && !in_array('design', $directories, true), 'Removed design files must not return in new backups.');
         self::assert(is_array($rootFiles) && in_array('teams-import-v044.php', $rootFiles, true) && in_array('teams-save-v044.php', $rootFiles, true), 'Versioned team endpoints must be included in complete backups.');
+        self::assert(str_contains((string) file_get_contents(dirname(__DIR__) . '/app/Domain/BackupService.php'), 'function delete'), 'Backup service must expose controlled deletion.');
     }
 
     private static function fails(callable $callback): void

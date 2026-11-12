@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.2 - 2026-11-12
+
+### Added
+
+- u každé uložené zálohy je nyní tlačítko pro smazání s potvrzením, kontrolou názvu souboru na serveru, oprávněním správce, CSRF ochranou a záznamem do auditu.
+
+### Changed
+
+- poznámky k vydání ROBO jsou celé česky a neobsahují samostatnou část o interním ověřování ani obecné oznámení o aktualizačním archivu.
+
 ## 0.5.1 - 2026-11-12
 
 ### Added

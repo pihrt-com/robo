@@ -84,9 +84,10 @@ final class UiContractsTest
 
         $admin = self::render('admin', ['settingsLinks'=>[
             ['href'=>'/robo/system/competition','label'=>'Ročník soutěže a jazyk'],
-        ], 'blocks'=>[], 'backups'=>[], 'base'=>'/robo']);
+        ], 'blocks'=>[], 'backups'=>[['filename'=>'robo-backup-20261112-120000-a1b2c3.zip', 'created_at'=>'12. 11. 2026 12:00:00', 'size'=>1024]], 'base'=>'/robo']);
         self::assert(str_contains($admin, 'class="settings-link"'), 'System administration links must use button styling.');
         self::assert(!str_contains($admin, 'Nastavení —'), 'System administration labels must omit the repeated settings prefix.');
+        self::assert(str_contains($admin, '/system/backup/delete') && str_contains($admin, 'Smazat tuto uloženou zálohu?'), 'Saved backups must offer a confirmed deletion action.');
     }
 
     private static function render(string $viewName, array $variables): string

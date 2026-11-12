@@ -40,12 +40,11 @@
     const existingSignedUser = header.querySelector(".signed-user");
     const needsUser = !existingSignedUser || existingSignedUser.textContent.trim() === "";
     const needsNavigation = !existingNavigation || existingNavigation.children.length === 0;
-    const needsHeaderRefresh = header.dataset.layoutVersion !== "0.4.7";
+    const needsHeaderRefresh = true;
     const meta = header.querySelector(".meta-row");
     const logout = meta?.querySelector('form[action$="/logout"]');
     const helpButton = header.querySelector("[data-help-modal='page-help']");
     if (meta && logout && helpButton && helpButton.parentElement !== meta) logout.insertAdjacentElement("afterend", helpButton);
-    if (!needsUser && !needsNavigation && !needsHeaderRefresh) return;
     try {
       const requestPath = window.location.pathname.replace(/^\/robo\/?/, "").replace(/\/$/, "");
       const activePath = requestPath.startsWith("system") ? "system" : (requestPath || "standings");
@@ -98,7 +97,7 @@
           if (!existingSignedUser) meta.insertBefore(signedUser, logout);
         }
       }
-      if (needsNavigation && Array.isArray(payload.navigation)) {
+      if ((needsNavigation || needsHeaderRefresh) && Array.isArray(payload.navigation)) {
         const navigation = existingNavigation || document.createElement("nav");
         navigation.className = "nav-row";
         navigation.setAttribute("aria-label", l10n("Navigation", "Hlavní navigace"));

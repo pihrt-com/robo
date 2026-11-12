@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.8 - 2026-11-12
+
+### Fixed
+
+- pracovní záhlaví se nyní po každém načtení stránky vždy sestaví z JavaScriptu a aktuálních dat necachovaného endpointu; už nezávisí na značce verze uložené ve staré PHP šabloně.
+
 ## 0.4.7 - 2026-11-12
 
 ### Changed

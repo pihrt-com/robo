@@ -40,6 +40,7 @@ final class UiContractsTest
         self::assert(str_contains($javascript, 'if (field === "is_confirmed")'), 'A regular checkpoint response must not restore missing placeholders.');
         self::assert(str_contains($javascript, 'document.documentElement.lang || "cs"'), 'Client-side date and save-state formatting must follow the selected locale.');
         self::assert(str_contains($javascript, 'header-v047.php?page=${encodeURIComponent(activePath)}'), 'Stale authenticated layouts must repair the complete header through the new endpoint.');
+        self::assert(str_contains($javascript, 'const needsHeaderRefresh = true;'), 'Header synchronization must run on every authenticated page load.');
         self::assert(str_contains($javascript, 'navigation.dataset.navigationRepair = "0.4.7"'), 'Repaired navigation must expose its client-side version marker.');
         self::assert(str_contains($javascript, 'existingSignedUser.textContent.trim() === ""'), 'An empty user label in a stale layout must be filled from the navigation endpoint.');
         self::assert(str_contains($javascript, 'data-completed-count'), 'The header repair must restore completed-work counters.');

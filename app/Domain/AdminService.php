@@ -84,6 +84,31 @@ final class AdminService
         $this->audit->log($userId, $id, 'system.competition_activated', 'Byl aktivován ročník soutěže.', [], $ip);
     }
 
+    public function deleteCompetition(int $id, int $userId, string $ip): void
+    {
+        $this->pdo->beginTransaction();
+        try {
+            $select = $this->pdo->prepare('SELECT competition_year,is_active FROM competitions WHERE id=:id FOR UPDATE');
+            $select->execute(['id' => $id]);
+            $competition = $select->fetch();
+            if ($competition === false) {
+                throw new RuntimeException('Ročník nebyl nalezen.');
+            }
+            if ((int) $competition['is_active'] === 1) {
+                throw new RuntimeException('Aktivní ročník nelze smazat. Nejprve aktivujte jiný ročník.');
+            }
+            $delete = $this->pdo->prepare('DELETE FROM competitions WHERE id=:id');
+            $delete->execute(['id' => $id]);
+            $this->audit->log($userId, null, 'system.competition_deleted', 'Historický ročník byl smazán.', ['competition_id' => $id, 'year' => (int) $competition['competition_year']], $ip);
+            $this->pdo->commit();
+        } catch (\Throwable $exception) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $exception;
+        }
+    }
+
     public function createCompetition(int $year, string $date, string $locale, int $teamCount, int $userId, string $ip): int
     {
         $value = AdminValidation::competition($year, $date, $locale, $teamCount);
@@ -254,6 +279,45 @@ final class AdminService
         $query = $this->pdo->prepare('SELECT a.id,a.created_at,a.user_id,a.competition_id,a.event_type,a.message,a.context_json,a.ip_address,u.username FROM audit_log a LEFT JOIN users u ON u.id=a.user_id ' . $where . ' ORDER BY a.id DESC LIMIT ' . $perPage . ' OFFSET ' . $offset);
         $query->execute($params);
         return ['rows' => $query->fetchAll(), 'total' => $total, 'page' => $page, 'per_page' => $perPage];
+    }
+
+    public function deleteAuditEntry(int $id, int $userId, string $ip): void
+    {
+        $this->pdo->beginTransaction();
+        try {
+        $select = $this->pdo->prepare('SELECT event_type,created_at FROM audit_log WHERE id=:id');
+        $select->execute(['id' => $id]);
+        $entry = $select->fetch();
+        if ($entry === false) {
+            throw new RuntimeException('Záznam auditu nebyl nalezen.');
+        }
+        $delete = $this->pdo->prepare('DELETE FROM audit_log WHERE id=:id');
+        $delete->execute(['id' => $id]);
+        $this->audit->log($userId, null, 'system.audit_entry_deleted', 'Záznam auditu byl smazán.', ['audit_id' => $id, 'event_type' => (string) $entry['event_type'], 'created_at' => (string) $entry['created_at']], $ip);
+        $this->pdo->commit();
+        } catch (\Throwable $exception) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $exception;
+        }
+    }
+
+    public function clearAudit(int $userId, string $ip): int
+    {
+        $this->pdo->beginTransaction();
+        try {
+        $count = (int) $this->pdo->query('SELECT COUNT(*) FROM audit_log')->fetchColumn();
+        $this->pdo->exec('DELETE FROM audit_log');
+        $this->audit->log($userId, null, 'system.audit_cleared', 'Auditní log byl vymazán.', ['deleted_count' => $count], $ip);
+        $this->pdo->commit();
+        return $count;
+        } catch (\Throwable $exception) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $exception;
+        }
     }
 
     /** @return array{failed_logins:int,blocked_logins:int,csrf_rejections:int,expired_sessions:int,recent:list<array<string,mixed>>} */

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.1 - 2026-11-12
+
+### Added
+
+- ve správě ročníků lze s potvrzením smazat neaktivní historický ročník včetně jeho týmů, jízd a hodnocení; aktivní ročník smazat nelze.
+- systémový log nabízí mazání jednotlivých záznamů i hromadné vymazání po opsání textu `SMAZAT LOGY`; hromadné vymazání uloží do nového logu vlastní záznam.
+
+### Changed
+
+- změna mazání ročníku i logu je zapsána ve stejné databázové transakci, takže při chybě nedojde k částečně dokončené operaci.
+
 ## 0.5.0 - 2026-11-12
 
 ### Added

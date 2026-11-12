@@ -53,6 +53,10 @@ final class UiContractsTest
         self::assert(str_contains($stylesheet, '.header-actions { justify-self: end;'), 'User controls and help must stay together on the right.');
         $security = self::render('settings-security', ['overview' => ['failed_logins'=>1, 'blocked_logins'=>2, 'csrf_rejections'=>3, 'expired_sessions'=>4, 'recent'=>[]], 'blocks' => [], 'base' => '/robo']);
         self::assert(str_contains($security, 'Stav ochrany za posledních 24 hodin') && str_contains($security, 'Odmítnuté CSRF požadavky'), 'Security dashboard must display current audit metrics.');
+        $competitionSettings = self::render('settings-competition', ['activeCompetition' => ['id'=>1,'competition_year'=>2027,'competition_date'=>'2027-01-01','locale'=>'en','team_count'=>8], 'competitions' => [['id'=>1,'competition_year'=>2027,'competition_date'=>'2027-01-01','locale'=>'en','team_count'=>8,'is_active'=>1], ['id'=>2,'competition_year'=>2026,'competition_date'=>'2026-01-01','locale'=>'cs','team_count'=>8,'is_active'=>0]], 'base'=>'/robo']);
+        self::assert(str_contains($competitionSettings, '/system/competition/delete') && str_contains($competitionSettings, 'Aktivní ročník nelze smazat.'), 'Only historical competitions must expose deletion controls.');
+        $auditLog = self::render('settings-log', ['search'=>'', 'audit'=>['rows'=>[['id'=>1, 'created_at'=>'2026-11-12 12:00:00', 'username'=>'admin', 'user_id'=>1, 'competition_id'=>1, 'event_type'=>'system.test', 'message'=>'Test', 'context_json'=>'{}', 'ip_address'=>'127.0.0.1']], 'total'=>1, 'page'=>1, 'per_page'=>100], 'base'=>'/robo']);
+        self::assert(str_contains($auditLog, '/system/log/delete') && str_contains($auditLog, 'SMAZAT LOGY'), 'Audit log must expose individual and explicitly confirmed bulk deletion.');
 
         $standings = self::render('standings', ['rows' => [[
             'team_id' => 3, 'number' => 6, 'school' => 'Škola', 'members' => 'Jméno', 'checkpoint_1' => 6, 'furthest_checkpoint' => 'checkpoint_1', 'best_time' => 1000, 'did_not_stop' => 0, 'technical_penalty' => 0, 'total_time' => 1000, 'rank' => 1,

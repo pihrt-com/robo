@@ -32,6 +32,10 @@ final class BackendContractsTest
         $session = (string) file_get_contents(dirname(__DIR__) . '/app/Core/Session.php');
         self::assert(str_contains($session, 'IDLE_TIMEOUT_SECONDS = 28800'), 'Sessions must expire after the configured inactivity period.');
         self::assert(str_contains($session, "ini_set('session.use_strict_mode', '1')"), 'Sessions must reject uninitialized identifiers.');
+        $adminService = (string) file_get_contents(dirname(__DIR__) . '/app/Domain/AdminService.php');
+        self::assert(str_contains($adminService, 'function deleteCompetition'), 'Historical competitions must have a protected delete operation.');
+        self::assert(str_contains($adminService, 'Aktivní ročník nelze smazat'), 'The active competition must remain protected from deletion.');
+        self::assert(str_contains($adminService, 'function clearAudit'), 'Administrators must be able to clear audit records with an explicit workflow.');
     }
 
     private static function assert(bool $condition, string $message): void

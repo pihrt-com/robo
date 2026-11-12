@@ -34,7 +34,7 @@ Veřejné průběžné výsledky jsou dostupné bez přihlášení na adrese `/r
 
 ## Správa soutěže
 
-Správce nastavuje aktivní ročník, datum soutěže, jazyk a počet týmů. Samostatně upravuje texty českého a anglického rozhraní, hodnoty penalizací, uživatelské účty a role, školy, soutěžící a systémový log. Správcovský rozcestník používá tlačítka pro jednotlivé oblasti bez opakování slova „Nastavení“.
+Správce nastavuje aktivní ročník, datum soutěže, jazyk a počet týmů. Samostatně upravuje texty českého a anglického rozhraní, hodnoty penalizací, uživatelské účty a role, školy, soutěžící a systémový log. Historický neaktivní ročník lze po potvrzení odstranit včetně soutěžních dat; aktivní ročník aplikace chrání před smazáním. Správcovský rozcestník používá tlačítka pro jednotlivé oblasti bez opakování slova „Nastavení“.
 
 Číslo existujícího týmu nelze ručně změnit. Nový tým dostane na serveru další volné číslo. Import XLSX zobrazí před nahrazením dat náhled, rozpozná běžné české i anglické názvy sloupců a přijme také soubor, ve kterém číslo týmu nebo soutěžící chybí. Chybějící čísla doplní podle pořadí neprázdných řádků, chybějící soutěžící ponechá prázdné a nesouvisející sloupce ignoruje.
 
@@ -61,11 +61,11 @@ Správce může ověřit nejnovější veřejné vydání na GitHubu a nainstalo
 
 Každý zápis vyžaduje platnou relaci, oprávnění role a CSRF token. Hesla jsou ukládána přes `password_hash`, cookies relace jsou HTTP-only a SameSite Strict a při HTTPS používají příznak Secure. Relace skončí po osmi hodinách nečinnosti a její identifikátor se pravidelně obnovuje. Přihlášení omezuje opakované neúspěšné pokusy z jedné IP adresy.
 
-Správa systému obsahuje obrazovku Bezpečnost a audit s počty neúspěšných a blokovaných přihlášení, odmítnutých CSRF požadavků a ukončených relací za posledních 24 hodin, seznamem aktivních blokací a posledními bezpečnostními událostmi. Úplný auditní log zachovává uživatele, ročník, čas, IP adresu, druh události a podrobnosti každé soutěžní či správcovské změny.
+Správa systému obsahuje obrazovku Bezpečnost a audit s počty neúspěšných a blokovaných přihlášení, odmítnutých CSRF požadavků a ukončených relací za posledních 24 hodin, seznamem aktivních blokací a posledními bezpečnostními událostmi. Úplný auditní log zachovává uživatele, ročník, čas, IP adresu, druh události a podrobnosti každé soutěžní či správcovské změny. Správce může odstranit jednotlivý záznam nebo celý log po opsání potvrzovacího textu; po hromadném vymazání zůstane záznam o této akci.
 
 ## Historie verzí
 
 Podrobný přehled vydání a oprav je v souboru [CHANGELOG.md](CHANGELOG.md).
 
-Dokumentace odpovídá verzi 0.5.0 a byla ověřena 2026-11-12 pro pracovní složku `C:\Users\marti\OneDrive\Dokumenty\GitHub\robo`.
+Dokumentace odpovídá verzi 0.5.1 a byla ověřena 2026-11-12 pro pracovní složku `C:\Users\marti\OneDrive\Dokumenty\GitHub\robo`.
 

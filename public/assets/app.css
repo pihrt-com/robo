@@ -22,24 +22,24 @@ button { border-radius: var(--radius); font-weight: 800; cursor: pointer; }
 
 .app-shell { min-height: 100vh; background: var(--page); }
 .app-header { position: sticky; top: 0; z-index: 20; background: var(--header); border-bottom: 1px dashed var(--ink); box-shadow: 0 2px 0 rgba(0,0,0,.1); }
-.meta-row { display: grid; grid-template-columns: auto minmax(110px,1fr) minmax(160px,1.4fr) minmax(160px,1.4fr) auto auto auto; align-items: center; gap: .5rem; min-height: 34px; padding: .28rem max(1rem, calc((100vw - 1600px) / 2)); font-size: .78rem; }
+.meta-row { display: grid; grid-template-columns: auto auto auto auto auto minmax(150px,1fr) auto auto; align-items: center; gap: .55rem; min-height: 34px; padding: .28rem max(1rem, calc((100vw - 1600px) / 2)); font-size: .78rem; }
 .meta-row-static { grid-template-columns: auto 1fr auto auto auto; }
 .current-clock { display: inline-flex; gap: .5rem; }
 [data-current-date], [data-current-time] { font-size: 1.3rem; }
-.brand-row { display: grid; grid-template-columns: max-content minmax(0, 1fr) max-content; align-items: center; column-gap: .75rem; min-height: 54px; padding: 0 max(1rem, calc((100vw - 1600px) / 2)); }
+.brand-row { display: grid; grid-template-columns: max-content minmax(0, 1fr) max-content; align-items: center; column-gap: .75rem; min-height: 48px; padding: 0 max(1rem, calc((100vw - 1600px) / 2)); }
 .brand { color: var(--orange); font-weight: 800; font-size: 1.3rem; text-decoration: none; }
 .page-title { min-width: 0; overflow: hidden; color: var(--orange); font-size: clamp(1.05rem, 2.15vw, 1.45rem); font-weight: 800; text-align: center; text-overflow: ellipsis; white-space: nowrap; margin: 0; }
 .user-tools { justify-self: end; display: flex; align-items: stretch; }
 .user-name { background: var(--page); padding: .5rem .65rem; border: var(--line); border-right: 0; font-size: .8rem; }
-.nav-row { display: flex; justify-content: center; gap: 0; border-top: 1px dashed var(--ink); }
-.nav-link { min-width: 162px; padding: .8rem 1rem; color: var(--ink); background: #d4dae3; border: var(--line); border-bottom: 0; text-align: center; font-weight: 800; text-decoration: none; }
-.nav-link[aria-current="page"], .nav-link:hover { color: var(--white); background: var(--ink); }
+.nav-row { display: flex; justify-content: center; gap: .45rem; padding: .2rem max(1rem, calc((100vw - 1600px) / 2)) .35rem; border-top: 1px dashed var(--ink); }
+.nav-link { min-width: 148px; padding: .58rem .95rem; color: var(--ink); background: #d4dae3; border: var(--line); border-radius: var(--radius); box-shadow: 0 2px 0 rgba(0,0,0,.16); text-align: center; font-weight: 800; text-decoration: none; transition: transform .12s ease, background .12s ease; }
+.nav-link[aria-current="page"], .nav-link:hover { color: var(--white); background: var(--ink); transform: translateY(-1px); }
 .navigation-error { padding: .45rem 1rem; color: #960000; background: #ffdad7; border-top: 1px dashed var(--ink); text-align: center; font-weight: 800; }
 .filter-row { display: flex; align-items: center; gap: .65rem; margin: 0 0 1rem; }
 .filter-row select { min-width: 17rem; }
 .page-preview-link { color: var(--green); font-weight: 800; }
 .page-preview-link:hover { color: var(--orange); }
-.app-main { width: min(1780px, 100%); margin: 0 auto; padding: clamp(.85rem, 1.8vw, 2rem); }
+.app-main { width: min(1780px, 100%); margin: 0 auto; padding: clamp(.55rem, 1.4vw, 1.5rem) clamp(.85rem, 1.8vw, 2rem) clamp(.85rem, 1.8vw, 2rem); }
 
 .button { display: inline-flex; align-items: center; justify-content: center; min-height: 2.35rem; padding: .45rem .9rem; border: var(--line); border-radius: var(--radius); color: var(--ink); background: #eff3e8; font-size: .82rem; line-height: 1.1; font-weight: 800; text-transform: uppercase; text-decoration: none; }
 .button:hover { filter: brightness(.92); }
@@ -115,6 +115,8 @@ button { border-radius: var(--radius); font-weight: 800; cursor: pointer; }
 .field-help, .muted { color: #555; font-size: .86rem; }
 .signed-user { display: grid; line-height: 1.1; text-align: right; }
 .signed-user small { color: #555; font-size: .68rem; }
+.connection-status { color: var(--green); font-weight: 800; }
+.connection-status.is-offline { color: var(--red); }
 .system-info { margin: .75rem .2rem 0; color: #777; font-size: .75rem; text-align: right; }
 .backup-row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
 .user-row-form { display: grid; grid-template-columns: minmax(150px,1.2fr) minmax(150px,1fr) minmax(135px,.7fr) minmax(190px,1.2fr) auto; align-items: center; gap: .5rem; }

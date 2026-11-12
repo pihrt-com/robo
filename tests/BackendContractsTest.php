@@ -24,6 +24,10 @@ final class BackendContractsTest
         $navigationEndpoint = (string) file_get_contents(dirname(__DIR__) . '/navigation-v043.php');
         self::assert(str_contains($navigationEndpoint, 'Session::userId()'), 'Navigation endpoint must require the signed-in session.');
         self::assert(str_contains($navigationEndpoint, "header('Cache-Control: no-store')"), 'Navigation endpoint must not be cached.');
+        $headerEndpoint = (string) file_get_contents(dirname(__DIR__) . '/header-v047.php');
+        self::assert(str_contains($headerEndpoint, 'Session::userId()'), 'Header repair endpoint must require the signed-in session.');
+        self::assert(str_contains($headerEndpoint, "header('Cache-Control: no-store')"), 'Header repair endpoint must not be cached.');
+        self::assert(str_contains($headerEndpoint, "'brand' => 'ROBO '"), 'Header repair endpoint must return the localized ROBO locale marker.');
     }
 
     private static function assert(bool $condition, string $message): void

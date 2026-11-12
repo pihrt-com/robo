@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.7 - 2026-11-12
+
+### Changed
+
+- pracovní záhlaví znovu zobrazuje počet týmů, zbývající a dokončené záznamy, stav spojení a ukládání; při anglickém ročníku vždy uvádí značku `ROBO <rok> EN`.
+- hlavní navigace má nižší zaoblené záložky s mezerami, takže horní panel zabírá méně svislého prostoru.
+
+### Fixed
+
+- nový necachovaný endpoint a šablona záhlaví obnoví správný jazyk, ročník, navigaci a pracovní stav i na hostingu, který nadále spouští dřívější verzi PHP šablony.
+
 ## 0.4.6 - 2026-11-12
 
 ### Fixed

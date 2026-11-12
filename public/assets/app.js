@@ -20,6 +20,14 @@
     if (pending && Number.isInteger(value) && value >= 0) pending.textContent = format(l10n("Pending", "Zbývá dokončit: {count}"), { count: value });
   }
 
+  function setConnectionStatus(online = navigator.onLine) {
+    const status = document.querySelector("[data-connection-status]");
+    if (!status) return;
+    const english = document.documentElement.lang === "en";
+    status.textContent = online ? l10n("ConnectionOnline", english ? "Connection: online" : "Spojení: online") : l10n("ConnectionOffline", english ? "Connection: offline" : "Spojení: bez připojení");
+    status.classList.toggle("is-offline", !online);
+  }
+
   function openModal(id) {
     const dialog = document.getElementById(id);
     if (dialog && typeof dialog.showModal === "function") dialog.showModal();
@@ -32,13 +40,16 @@
     const existingSignedUser = header.querySelector(".signed-user");
     const needsUser = !existingSignedUser || existingSignedUser.textContent.trim() === "";
     const needsNavigation = !existingNavigation || existingNavigation.children.length === 0;
+    const needsHeaderRefresh = header.dataset.layoutVersion !== "0.4.7";
     const meta = header.querySelector(".meta-row");
     const logout = meta?.querySelector('form[action$="/logout"]');
     const helpButton = header.querySelector("[data-help-modal='page-help']");
     if (meta && logout && helpButton && helpButton.parentElement !== meta) logout.insertAdjacentElement("afterend", helpButton);
-    if (!needsUser && !needsNavigation) return;
+    if (!needsUser && !needsNavigation && !needsHeaderRefresh) return;
     try {
-      const response = await fetch("/robo/navigation-v043.php", {
+      const requestPath = window.location.pathname.replace(/^\/robo\/?/, "").replace(/\/$/, "");
+      const activePath = requestPath.startsWith("system") ? "system" : (requestPath || "standings");
+      const response = await fetch(`/robo/header-v047.php?page=${encodeURIComponent(activePath)}`, {
         credentials: "same-origin",
         cache: "no-store",
         headers: { Accept: "application/json" },
@@ -49,6 +60,32 @@
       }
       if (!response.ok) throw new Error("Navigation endpoint failed");
       const payload = await response.json();
+      if (needsHeaderRefresh) {
+        const brand = header.querySelector(".brand");
+        if (brand && payload.brand) brand.textContent = String(payload.brand);
+        header.dataset.layoutVersion = "0.4.7";
+        if (meta && payload.summary) {
+          meta.classList.remove("meta-row-static");
+          const insertSummary = (selector, className, value) => {
+            let item = meta.querySelector(selector);
+            if (!item) {
+              item = document.createElement("span");
+              item.className = className;
+              meta.insertBefore(item, existingSignedUser || logout || null);
+            }
+            item.textContent = String(value || "");
+            return item;
+          };
+          insertSummary("[data-team-count]", "work-summary", payload.summary.teams).dataset.teamCount = "";
+          insertSummary("[data-pending-count]", "meta-optional", payload.summary.pending).dataset.pendingCount = "";
+          insertSummary("[data-completed-count]", "meta-optional", payload.summary.completed).dataset.completedCount = "";
+          const connection = insertSummary("[data-connection-status]", "meta-optional connection-status", payload.summary.connection);
+          connection.dataset.connectionStatus = "";
+          const save = insertSummary("[data-save-status]", "meta-optional", payload.summary.save);
+          save.dataset.saveStatus = "";
+          setConnectionStatus();
+        }
+      }
       if (needsUser) {
         if (meta && logout) {
           const signedUser = existingSignedUser || document.createElement("span");
@@ -65,8 +102,6 @@
         const navigation = existingNavigation || document.createElement("nav");
         navigation.className = "nav-row";
         navigation.setAttribute("aria-label", l10n("Navigation", "Hlavní navigace"));
-        const requestPath = window.location.pathname.replace(/^\/robo\/?/, "").replace(/\/$/, "");
-        const activePath = requestPath.startsWith("system") ? "system" : (requestPath || "standings");
         const links = payload.navigation.map((item) => {
           const link = document.createElement("a");
           link.className = "nav-link";
@@ -76,7 +111,7 @@
           return link;
         });
         navigation.replaceChildren(...links);
-        navigation.dataset.navigationRepair = "0.4.3";
+        navigation.dataset.navigationRepair = "0.4.7";
         if (!existingNavigation) header.append(navigation);
       }
     } catch (error) {
@@ -432,6 +467,10 @@
     if (bodies[0]) renderQualificationRows(bodies[0], rows);
     if (bodies[1]) renderParticipantsRows(bodies[1], rows);
   });
+
+  window.addEventListener("online", () => setConnectionStatus(true));
+  window.addEventListener("offline", () => setConnectionStatus(false));
+  setConnectionStatus();
 
   document.querySelectorAll("[data-endpoint][data-refresh-ms]").forEach((root) => {
     const interval = Number(root.dataset.refreshMs);

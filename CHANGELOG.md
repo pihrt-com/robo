@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.4 - 2026-11-12
+
+### Fixed
+
+- veřejné pořadí funguje na adrese `/robo/public` i `/robo/public/`; Apache již druhou variantu nezamění za fyzickou složku s vypnutým výpisem obsahu.
+
 ## 0.5.3 - 2026-11-12
 
 ### Added

@@ -36,6 +36,8 @@ final class BackendContractsTest
         self::assert(str_contains($adminService, 'function deleteCompetition'), 'Historical competitions must have a protected delete operation.');
         self::assert(str_contains($adminService, 'Aktivní ročník nelze smazat'), 'The active competition must remain protected from deletion.');
         self::assert(str_contains($adminService, 'function clearAudit'), 'Administrators must be able to clear audit records with an explicit workflow.');
+        $rewriteRules = (string) file_get_contents(dirname(__DIR__) . '/.htaccess');
+        self::assert(str_contains($rewriteRules, 'RewriteRule ^public/?$ index.php [L,QSA]'), 'Public standings must be routed before Apache treats the public asset directory as a directory listing.');
     }
 
     private static function assert(bool $condition, string $message): void

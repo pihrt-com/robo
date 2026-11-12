@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.3 - 2026-11-12
+
+### Added
+
+- všechny stránky ROBO nyní používají oranžovou ikonu ROBO v kartě prohlížeče.
+- přihlašovací stránka obsahuje odkaz na veřejné průběžné pořadí bez hesla.
+
+### Changed
+
+- veřejné pořadí má pouze úspornou lištu s datem a časem, značkou ROBO s rokem a jazykem a odkazem na přihlášení; neobsahuje pracovní navigaci ani ovládání přihlášeného uživatele.
+
 ## 0.5.2 - 2026-11-12
 
 ### Added

@@ -39,6 +39,7 @@ $assetVersion = max(
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title><?= htmlspecialchars($title ?? 'ROBO', ENT_QUOTES, 'UTF-8') ?></title>
+  <link rel="icon" type="image/svg+xml" href="/robo/assets/favicon.svg?v=0.5.3">
   <link rel="stylesheet" href="/robo/assets/app.css?v=<?= $assetVersion ?>">
 </head>
 <body>

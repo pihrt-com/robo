@@ -30,7 +30,7 @@ Celkové pořadí řadí týmy s platným časem podle výsledného času včetn
 
 ## Veřejná obrazovka
 
-Veřejné průběžné výsledky jsou dostupné bez přihlášení na adrese `/robo/public`. Obrazovka zobrazuje pořadí, číslo týmu, školu, soutěžící a výsledný čas a načítá aktuální data z `/robo/api/standings` každých 10 sekund. Je určená pro projektor, informační monitor nebo samostatný prohlížeč pro návštěvníky.
+Veřejné průběžné výsledky jsou dostupné bez přihlášení na adrese `/robo/public`; vede na ně také tlačítko z přihlašovací stránky. Obrazovka zobrazuje pořadí, číslo týmu, školu, soutěžící a výsledný čas a načítá aktuální data z `/robo/api/standings` každých 10 sekund. Je určená pro projektor, informační monitor nebo samostatný prohlížeč pro návštěvníky. Její horní lišta obsahuje pouze datum a čas, značku ROBO s rokem a jazykem a odkaz na přihlášení.
 
 ## Správa soutěže
 
@@ -67,5 +67,5 @@ Správa systému obsahuje obrazovku Bezpečnost a audit s počty neúspěšných
 
 Podrobný přehled vydání a oprav je v souboru [CHANGELOG.md](CHANGELOG.md).
 
-Dokumentace odpovídá verzi 0.5.2 a byla ověřena 2026-11-12 pro pracovní složku `C:\Users\marti\OneDrive\Dokumenty\GitHub\robo`.
+Dokumentace odpovídá verzi 0.5.3 a byla ověřena 2026-11-12 pro pracovní složku `C:\Users\marti\OneDrive\Dokumenty\GitHub\robo`.
 

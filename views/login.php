@@ -1,7 +1,7 @@
 <?php /** @var string|null $error */ ?>
 <!doctype html>
 <html lang="<?= htmlspecialchars(strtolower(($locale ?? 'CZ') === 'CZ' ? 'cs' : (string)($locale ?? 'EN')), ENT_QUOTES, 'UTF-8') ?>">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ROBO — Přihlášení</title><link rel="stylesheet" href="/robo/assets/app.css"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ROBO — Přihlášení</title><link rel="icon" type="image/svg+xml" href="/robo/assets/favicon.svg?v=0.5.3"><link rel="stylesheet" href="/robo/assets/app.css"></head>
 <body class="login-page">
   <main class="login-card">
     <h1>ROBO <small><?= htmlspecialchars($year ?? '', ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars($locale ?? 'CZ', ENT_QUOTES, 'UTF-8') ?></small></h1>

@@ -67,5 +67,4 @@ Správa systému obsahuje obrazovku Bezpečnost a audit s počty neúspěšných
 
 Podrobný přehled vydání a oprav je v souboru [CHANGELOG.md](CHANGELOG.md).
 
-Dokumentace odpovídá verzi 0.5.3 a byla ověřena 2026-11-12 pro pracovní složku `C:\Users\marti\OneDrive\Dokumenty\GitHub\robo`.
 

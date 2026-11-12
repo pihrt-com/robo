@@ -65,5 +65,5 @@ Každý zápis vyžaduje platnou relaci, oprávnění role a CSRF token. Hesla j
 
 Podrobný přehled vydání a oprav je v souboru [CHANGELOG.md](CHANGELOG.md).
 
-Dokumentace odpovídá verzi 0.4.4 a byla ověřena 2026-11-12 pro pracovní složku `C:\Users\marti\OneDrive\Dokumenty\GitHub\robo`.
+Dokumentace odpovídá verzi 0.4.5 a byla ověřena 2026-11-12 pro pracovní složku `C:\Users\marti\OneDrive\Dokumenty\GitHub\robo`.
 

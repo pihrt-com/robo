@@ -59,6 +59,9 @@ final class UiContractsTest
         $public = self::render('public-display', ['locale' => 'en', 'year' => '2026', 'rows' => [], 'labels' => ['title' => 'ROBO {year} — Live standings', 'rank' => 'Rank', 'team' => 'Team', 'school' => 'School', 'contestants' => 'Contestants', 'best_time' => 'Best time']]);
         self::assert(str_contains($public, 'ROBO 2026 — Live standings') && str_contains($public, '>Best time</th>'), 'Public standings must render its English catalog labels.');
 
+        $login = self::render('login-v045', ['locale' => 'en', 'year' => '2026', 'labels' => ['title' => 'ROBO — Sign in', 'heading' => 'Sign in to the system', 'username' => 'Username', 'password' => 'Password', 'show_password' => 'Show password', 'submit' => 'Sign in', 'help_aria' => 'Sign-in help', 'help_title' => 'Sign in', 'help' => 'Enter your assigned username and password.', 'close' => 'Close'], 'error' => null]);
+        self::assert(str_contains($login, '<small>2026 EN</small>') && str_contains($login, '>Sign in to the system</h2>') && str_contains($login, 'Enter your assigned username and password.'), 'Login screen must render English labels, help and the EN locale marker.');
+
         $teams = self::render('teams', ['teams' => [[
             'id'=>1,'team_number'=>1,'school_name'=>'Škola','contestant_names'=>'Jan, Eva',
         ]], 'base'=>'/robo']);

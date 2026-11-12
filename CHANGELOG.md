@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.6 - 2026-11-12
+
+### Fixed
+
+- přihlašovací obrazovka nyní při anglickém ročníku používá anglické nadpisy, formulář, nápovědu, dialogové tlačítko, chybové hlášení i značku `ROBO … EN`; načítá novou šablonu, aby hosting s uloženou starší PHP verzí nemohl ponechat předchozí češtinu.
+- aktivní ročník bez řádků penalizací při otevření správy penalizací automaticky obnoví výchozí technickou penalizaci a penalizaci za nezastavení; nové ročníky je dostanou už při vytvoření.
+
 ## 0.4.5 - 2026-11-12
 
 ### Fixed

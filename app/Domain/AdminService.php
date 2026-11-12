@@ -14,6 +14,15 @@ final class AdminService
     {
     }
 
+    /** @return list<array{code:string,label_cs:string,label_en:string,seconds:int}> */
+    public static function defaultPenalties(): array
+    {
+        return [
+            ['code' => 'technical', 'label_cs' => 'Technická přejímka', 'label_en' => 'Technical inspection', 'seconds' => 90],
+            ['code' => 'not_stopped', 'label_cs' => 'Nezastavení', 'label_en' => 'Did not stop', 'seconds' => 5],
+        ];
+    }
+
     public function competitions(): array
     {
         return $this->pdo->query('SELECT id, competition_year, competition_date, locale, team_count, title_cs, title_en, is_active, created_at FROM competitions ORDER BY competition_year DESC')->fetchAll();
@@ -87,6 +96,7 @@ final class AdminService
             for ($number = 1; $number <= $teamCount; $number++) {
                 $teams->execute(['competition_id' => $competitionId, 'team_number' => $number]);
             }
+            $this->ensurePenalties($competitionId);
             $this->pdo->commit();
         } catch (\Throwable $exception) {
             $this->pdo->rollBack();
@@ -116,9 +126,18 @@ final class AdminService
 
     public function penalties(int $competitionId): array
     {
+        $this->ensurePenalties($competitionId);
         $query = $this->pdo->prepare('SELECT id, code, label_cs, label_en, seconds_value FROM penalties WHERE competition_id=:competition_id ORDER BY id');
         $query->execute(['competition_id' => $competitionId]);
         return $query->fetchAll();
+    }
+
+    private function ensurePenalties(int $competitionId): void
+    {
+        $insert = $this->pdo->prepare('INSERT INTO penalties (competition_id,code,label_cs,label_en,seconds_value) VALUES (:competition_id,:code,:label_cs,:label_en,:seconds) ON DUPLICATE KEY UPDATE code=VALUES(code)');
+        foreach (self::defaultPenalties() as $penalty) {
+            $insert->execute(['competition_id' => $competitionId] + $penalty);
+        }
     }
 
     public function savePenalty(int $competitionId, string $code, string $cs, string $en, int $seconds, int $userId, string $ip): void

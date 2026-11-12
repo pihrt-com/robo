@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Robo\Tests;
 
 use InvalidArgumentException;
+use Robo\Domain\AdminService;
 use Robo\Domain\AdminValidation;
 
 final class AdminValidationTest
@@ -16,6 +17,10 @@ final class AdminValidationTest
         self::assert(AdminValidation::password('Dlouhé heslo ! 2026') === 'Dlouhé heslo ! 2026', 'Password must accept spaces and special characters.');
         $penalty = AdminValidation::penalty('not_stopped', 'Nezastavení', 'Did not stop', 5);
         self::assert($penalty['seconds'] === 5, 'Penalty seconds must be retained.');
+        self::assert(AdminService::defaultPenalties() === [
+            ['code' => 'technical', 'label_cs' => 'Technická přejímka', 'label_en' => 'Technical inspection', 'seconds' => 90],
+            ['code' => 'not_stopped', 'label_cs' => 'Nezastavení', 'label_en' => 'Did not stop', 'seconds' => 5],
+        ], 'Every competition must receive the required default penalties.');
         self::fails(static fn() => AdminValidation::competition(2019, '2027-03-05', 'cs', 16));
         self::fails(static fn() => AdminValidation::username('bad name'));
         self::fails(static fn() => AdminValidation::password('kratke'));

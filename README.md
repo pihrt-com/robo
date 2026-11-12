@@ -2,7 +2,7 @@
 
 [![Vydání](https://img.shields.io/github/v/release/pihrt-com/robo?display_name=tag&sort=semver&label=verze&logo=github)](https://github.com/pihrt-com/robo/releases) [![Stažení](https://img.shields.io/github/downloads/pihrt-com/robo/total?label=stažení&logo=github)](https://github.com/pihrt-com/robo/releases) [![Poslední změna](https://img.shields.io/github/last-commit/pihrt-com/robo/main?label=aktualizováno&logo=git)](https://github.com/pihrt-com/robo/commits/main)
 
-ROBO je samostatná webová aplikace pro řízení robotické soutěže od přípravy ročníku přes technickou kontrolu a kvalifikační jízdy až po zveřejnění výsledků. Přepnutí jazyka ročníku lokalizuje všechny pracovní a veřejné obrazovky pro uživatele; správa systému zůstává v administrativním jazyce.
+ROBO je samostatná webová aplikace pro řízení robotické soutěže od přípravy ročníku přes technickou kontrolu a kvalifikační jízdy až po zveřejnění výsledků. Přepnutí jazyka ročníku lokalizuje přihlašovací, pracovní i veřejné obrazovky pro uživatele; správa systému zůstává v administrativním jazyce.
 
 ## Co aplikace dělá
 
@@ -65,5 +65,5 @@ Každý zápis vyžaduje platnou relaci, oprávnění role a CSRF token. Hesla j
 
 Podrobný přehled vydání a oprav je v souboru [CHANGELOG.md](CHANGELOG.md).
 
-Dokumentace odpovídá verzi 0.4.5 a byla ověřena 2026-11-12 pro pracovní složku `C:\Users\marti\OneDrive\Dokumenty\GitHub\robo`.
+Dokumentace odpovídá verzi 0.4.6 a byla ověřena 2026-11-12 pro pracovní složku `C:\Users\marti\OneDrive\Dokumenty\GitHub\robo`.
 

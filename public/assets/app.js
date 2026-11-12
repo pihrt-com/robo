@@ -251,7 +251,7 @@
       const input = document.getElementById(toggle.dataset.passwordToggle);
       if (!input) return;
       input.type = input.type === "password" ? "text" : "password";
-      toggle.setAttribute("aria-label", input.type === "password" ? "Zobrazit heslo" : "Skrýt heslo");
+      toggle.setAttribute("aria-label", input.type === "password" ? l10n("PasswordShow", "Zobrazit heslo") : l10n("PasswordHide", "Skrýt heslo"));
       return;
     }
     const tri = event.target.closest(".tri-state[data-state]");

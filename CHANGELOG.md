@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.5.0 - 2026-11-12
+
+### Added
+
+- nová stránka Bezpečnost a audit ve správě systému zobrazuje bezpečnostní metriky za 24 hodin, aktivní blokace a poslední bezpečnostní události s odkazem na úplný auditní log.
+
+### Changed
+
+- relace používají přísný režim identifikátorů, HTTP-only cookies, osmihodinový limit nečinnosti a pravidelné obnovení identifikátoru relace.
+- web posílá ochranné hlavičky proti vložení do cizí stránky, podvrženému typu obsahu, sdílení refereru mimo web a zneužití kamery, mikrofonu nebo polohy.
+
+### Fixed
+
+- odmítnutý CSRF požadavek při přihlášení se nyní zaznamená do auditu a vrátí stejnou bezpečnou přihlašovací chybu místo technické chyby.
+
 ## 0.4.9 - 2026-11-12
 
 ### Changed

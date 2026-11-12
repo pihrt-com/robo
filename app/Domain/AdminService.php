@@ -255,4 +255,19 @@ final class AdminService
         $query->execute($params);
         return ['rows' => $query->fetchAll(), 'total' => $total, 'page' => $page, 'per_page' => $perPage];
     }
+
+    /** @return array{failed_logins:int,blocked_logins:int,csrf_rejections:int,expired_sessions:int,recent:list<array<string,mixed>>} */
+    public function securityOverview(): array
+    {
+        $types = ['security.login_failed', 'security.login_blocked', 'security.csrf_rejected', 'security.session_expired'];
+        $counts = array_fill_keys($types, 0);
+        $query = $this->pdo->prepare('SELECT event_type, COUNT(*) AS total FROM audit_log WHERE event_type IN (:failed,:blocked,:csrf,:expired) AND created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR) GROUP BY event_type');
+        $query->execute(['failed' => $types[0], 'blocked' => $types[1], 'csrf' => $types[2], 'expired' => $types[3]]);
+        foreach ($query->fetchAll() as $row) {
+            $counts[(string) $row['event_type']] = (int) $row['total'];
+        }
+        $recent = $this->pdo->prepare("SELECT a.created_at,a.event_type,a.message,a.ip_address,u.username FROM audit_log a LEFT JOIN users u ON u.id=a.user_id WHERE a.event_type LIKE 'security.%' ORDER BY a.id DESC LIMIT 30");
+        $recent->execute();
+        return ['failed_logins' => $counts['security.login_failed'], 'blocked_logins' => $counts['security.login_blocked'], 'csrf_rejections' => $counts['security.csrf_rejected'], 'expired_sessions' => $counts['security.session_expired'], 'recent' => $recent->fetchAll()];
+    }
 }

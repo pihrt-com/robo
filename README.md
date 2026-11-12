@@ -59,11 +59,13 @@ Správce může ověřit nejnovější veřejné vydání na GitHubu a nainstalo
 
 ## Bezpečnost a audit
 
-Každý zápis vyžaduje platnou relaci, oprávnění role a CSRF token. Hesla jsou ukládána přes `password_hash`, přihlášení omezuje opakované neúspěšné pokusy z jedné IP adresy a změny soutěžních dat i správy systému se zapisují do auditního logu s uživatelem, časem a podrobnostmi operace.
+Každý zápis vyžaduje platnou relaci, oprávnění role a CSRF token. Hesla jsou ukládána přes `password_hash`, cookies relace jsou HTTP-only a SameSite Strict a při HTTPS používají příznak Secure. Relace skončí po osmi hodinách nečinnosti a její identifikátor se pravidelně obnovuje. Přihlášení omezuje opakované neúspěšné pokusy z jedné IP adresy.
+
+Správa systému obsahuje obrazovku Bezpečnost a audit s počty neúspěšných a blokovaných přihlášení, odmítnutých CSRF požadavků a ukončených relací za posledních 24 hodin, seznamem aktivních blokací a posledními bezpečnostními událostmi. Úplný auditní log zachovává uživatele, ročník, čas, IP adresu, druh události a podrobnosti každé soutěžní či správcovské změny.
 
 ## Historie verzí
 
 Podrobný přehled vydání a oprav je v souboru [CHANGELOG.md](CHANGELOG.md).
 
-Dokumentace odpovídá verzi 0.4.9 a byla ověřena 2026-11-12 pro pracovní složku `C:\Users\marti\OneDrive\Dokumenty\GitHub\robo`.
+Dokumentace odpovídá verzi 0.5.0 a byla ověřena 2026-11-12 pro pracovní složku `C:\Users\marti\OneDrive\Dokumenty\GitHub\robo`.
 

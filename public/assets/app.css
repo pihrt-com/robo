@@ -106,6 +106,15 @@ button { border-radius: var(--radius); font-weight: 800; cursor: pointer; }
 .settings-link { display: flex; align-items: center; justify-content: center; min-height: 4.2rem; padding: .75rem 1rem; color: var(--ink); background: #eff3e8; border: var(--line); border-radius: var(--radius); box-shadow: 0 2px 0 rgba(0,0,0,.18); font-size: clamp(.95rem, 1.6vw, 1.15rem); font-weight: 800; text-align: center; text-decoration: none; }
 .settings-link:hover, .settings-link:focus-visible { color: var(--white); background: var(--green); }
 .action-card { margin-bottom: 1.25rem; padding: 1rem; border: var(--line); background: rgba(255,255,255,.22); }
+.security-dashboard { max-width: 1280px; margin-inline: auto; }
+.security-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .75rem; margin: .75rem 0 1.25rem; }
+.security-metrics article { display: grid; gap: .2rem; min-height: 6.5rem; padding: .9rem; border: var(--line); border-radius: var(--radius); background: var(--white); text-align: center; }
+.security-metrics strong { color: var(--orange); font-size: 2rem; line-height: 1; }
+.security-metrics span { font-size: .82rem; font-weight: 800; }
+.security-protection { margin: 0 0 1.25rem; padding: .85rem 1rem; border: var(--line); border-radius: var(--radius); background: rgba(255,255,255,.35); }
+.security-protection h2 { margin: 0 0 .4rem; font-size: 1.05rem; }
+.security-protection ul { margin: 0; padding-left: 1.25rem; }
+.security-protection li + li { margin-top: .3rem; }
 .action-card h2 { margin: 0 0 .35rem; color: #9c9c9c; font-size: 1.15rem; }
 .action-list { max-height: 180px; overflow: auto; background: var(--white); border: var(--line); }
 .action-list > * { padding: .5rem .7rem; border-bottom: 1px solid #ddd; }
@@ -185,5 +194,6 @@ dialog::backdrop { background: rgba(0,0,0,.55); }
   .user-name { display: none; }
   .two-column-form { grid-template-columns: 1fr; }
   .settings-list { grid-template-columns: 1fr; }
+  .security-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .login-page { padding: .75rem; }
 }

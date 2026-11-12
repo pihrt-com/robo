@@ -51,6 +51,8 @@ final class UiContractsTest
         self::assert(str_contains($stylesheet, '.nav-link { min-width: 148px;'), 'Navigation tabs must use the compact rounded treatment.');
         self::assert(str_contains($stylesheet, '.work-summary-row { display: inline-flex;'), 'Competition counters must use one centered summary row.');
         self::assert(str_contains($stylesheet, '.header-actions { justify-self: end;'), 'User controls and help must stay together on the right.');
+        $security = self::render('settings-security', ['overview' => ['failed_logins'=>1, 'blocked_logins'=>2, 'csrf_rejections'=>3, 'expired_sessions'=>4, 'recent'=>[]], 'blocks' => [], 'base' => '/robo']);
+        self::assert(str_contains($security, 'Stav ochrany za posledních 24 hodin') && str_contains($security, 'Odmítnuté CSRF požadavky'), 'Security dashboard must display current audit metrics.');
 
         $standings = self::render('standings', ['rows' => [[
             'team_id' => 3, 'number' => 6, 'school' => 'Škola', 'members' => 'Jméno', 'checkpoint_1' => 6, 'furthest_checkpoint' => 'checkpoint_1', 'best_time' => 1000, 'did_not_stop' => 0, 'technical_penalty' => 0, 'total_time' => 1000, 'rank' => 1,

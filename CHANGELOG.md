@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased - 2026-11-12
+
+### Fixed
+
+- přepnutí aktivního ročníku do angličtiny nyní přeloží záhlaví tabulek, dialogy, nápovědu, stav ukládání a automaticky obnovované výsledky na technické kontrole, obou drahách, v pořadí i na veřejné obrazovce; všechny tyto texty jsou dostupné v katalogu Texty stránek.
+
 ## 0.4.4 - 2026-11-10
 
 ### Added

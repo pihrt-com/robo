@@ -16,6 +16,8 @@ final class UiContractsTest
         self::assert(str_contains($technical, 'note-button has-note'), 'Saved technical note must be visibly marked.');
         self::assert(str_contains($technical, 'data-computed="technical-result" class="result-failed"'), 'Technical result must be updateable in place.');
         self::assert(str_contains($technical, 'class="modal-body team-details"'), 'Team details must use the larger regular-weight presentation.');
+        $technicalEnglish = self::render('technical', ['teams' => [], 'labels' => ['title' => 'Technical inspection', 'team' => 'Team', 'condition_1' => 'Dimensions 20x20x20 (cm)', 'condition_2' => 'Cup holder 1 (mm)', 'condition_3' => 'Cup space 2.5 (cm)', 'note' => 'Note', 'penalty' => 'Penalty (sec)', 'passed' => 'Passed']]);
+        self::assert(str_contains($technicalEnglish, 'Dimensions 20x20x20 (cm)') && str_contains($technicalEnglish, '>Team</th>'), 'Technical inspection table must render its English catalog labels.');
 
         $race = self::render('race', ['track' => 1, 'teams' => [[
             'id' => 1, 'number' => 1, 'school' => '', 'members' => '', 'confirmed' => 1, 'best_time' => null, 'did_not_stop' => 1,
@@ -30,10 +32,13 @@ final class UiContractsTest
         self::assert(str_contains($activeRace, 'data-value="6" data-empty-value="?">6x</button>'), 'Checkpoint counts must include the x suffix and retain their numeric value.');
         self::assert(str_contains($activeRace, 'data-open-modal="edit-2-time_1"'), 'Lap time editing must open on a regular click.');
         self::assert(!str_contains($activeRace, 'data-long-press="edit-2-time_1"'), 'Lap time editing must not require a long press.');
+        $raceEnglish = self::render('race', ['track' => 1, 'teams' => [], 'labels' => ['team' => 'Team', 'checkpoints' => 'Checkpoints', 'laps' => 'Complete lap times (ms)', 'did_not_stop' => 'Did not stop', 'confirmed' => 'Confirmed', 'finish' => 'Finish', 'time_1' => 'Time 1', 'time_2' => 'Time 2', 'time_3' => 'Time 3', 'time_4' => 'Time 4', 'time_5' => 'Time 5']]);
+        self::assert(str_contains($raceEnglish, '>Checkpoints</th>') && str_contains($raceEnglish, '>Did not stop</th>'), 'Track table must render its English catalog labels.');
 
         $javascript = (string) file_get_contents(dirname(__DIR__) . '/public/assets/app.js');
         $stylesheet = (string) file_get_contents(dirname(__DIR__) . '/public/assets/app.css');
         self::assert(str_contains($javascript, 'if (field === "is_confirmed")'), 'A regular checkpoint response must not restore missing placeholders.');
+        self::assert(str_contains($javascript, 'document.documentElement.lang || "cs"'), 'Client-side date and save-state formatting must follow the selected locale.');
         self::assert(str_contains($javascript, 'fetch("/robo/navigation-v043.php"'), 'Stale authenticated layouts must repair navigation through the new endpoint.');
         self::assert(str_contains($javascript, 'navigation.dataset.navigationRepair = "0.4.3"'), 'Repaired navigation must expose its client-side version marker.');
         self::assert(str_contains($javascript, 'existingSignedUser.textContent.trim() === ""'), 'An empty user label in a stale layout must be filled from the navigation endpoint.');
@@ -48,6 +53,11 @@ final class UiContractsTest
         self::assert(str_contains($standings, 'class="progress-mark">6x</td>'), 'Standings checkpoint counts must include the x suffix.');
         self::assert(str_contains($standings, 'class="form-actions standings-actions"'), 'Standings export actions must keep spacing above the table.');
         self::assert(!str_contains($standings, 'class="best-time">1000</td>'), 'Standings total time must not use the green highlight.');
+        $standingsEnglish = self::render('standings', ['rows' => [], 'labels' => ['team' => 'Team', 'checkpoints' => 'Checkpoints', 'best_time' => 'Best time (ms)', 'did_not_stop' => 'Did not stop', 'technical' => 'Technical', 'total' => 'Total (ms)', 'rank' => 'Rank', 'finish' => 'Finish', 'teams_contestants' => 'Teams and contestants', 'school' => 'School', 'contestants' => 'Contestants']]);
+        self::assert(str_contains($standingsEnglish, '>Checkpoints</th>') && str_contains($standingsEnglish, '>Teams and contestants</h2>'), 'Standings must render its English catalog labels.');
+
+        $public = self::render('public-display', ['locale' => 'en', 'year' => '2026', 'rows' => [], 'labels' => ['title' => 'ROBO {year} — Live standings', 'rank' => 'Rank', 'team' => 'Team', 'school' => 'School', 'contestants' => 'Contestants', 'best_time' => 'Best time']]);
+        self::assert(str_contains($public, 'ROBO 2026 — Live standings') && str_contains($public, '>Best time</th>'), 'Public standings must render its English catalog labels.');
 
         $teams = self::render('teams', ['teams' => [[
             'id'=>1,'team_number'=>1,'school_name'=>'Škola','contestant_names'=>'Jan, Eva',

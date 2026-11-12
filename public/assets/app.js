@@ -3,19 +3,21 @@
 
   const longPressMs = 650;
   let longPressTimer;
+  const l10n = (key, fallback) => document.body?.dataset[`l10n${key}`] || fallback;
+  const format = (text, values) => Object.entries(values).reduce((value, [key, replacement]) => value.replaceAll(`{${key}}`, String(replacement)), text);
 
   function setSaveStatus(state) {
     const status = document.querySelector("[data-save-status]");
     if (!status) return;
-    if (state === "saving") status.textContent = "Ukládám…";
-    else if (state === "saved") status.textContent = `Uloženo ${new Intl.DateTimeFormat("cs-CZ", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date())}`;
-    else if (state === "error") status.textContent = "Uložení se nezdařilo";
-    else status.textContent = "Čeká na změnu";
+    if (state === "saving") status.textContent = l10n("SaveSaving", "Ukládám…");
+    else if (state === "saved") status.textContent = format(l10n("SaveSaved", "Uloženo {time}"), { time: new Intl.DateTimeFormat(document.documentElement.lang || "cs", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date()) });
+    else if (state === "error") status.textContent = l10n("SaveError", "Uložení se nezdařilo");
+    else status.textContent = l10n("SaveWaiting", "Čeká na změnu");
   }
 
   function setPendingCount(value) {
     const pending = document.querySelector("[data-pending-count]");
-    if (pending && Number.isInteger(value) && value >= 0) pending.textContent = `Chybí ${value} dokončit`;
+    if (pending && Number.isInteger(value) && value >= 0) pending.textContent = format(l10n("Pending", "Zbývá dokončit: {count}"), { count: value });
   }
 
   function openModal(id) {
@@ -62,7 +64,7 @@
       if (needsNavigation && Array.isArray(payload.navigation)) {
         const navigation = existingNavigation || document.createElement("nav");
         navigation.className = "nav-row";
-        navigation.setAttribute("aria-label", "Hlavní navigace");
+        navigation.setAttribute("aria-label", l10n("Navigation", "Hlavní navigace"));
         const requestPath = window.location.pathname.replace(/^\/robo\/?/, "").replace(/\/$/, "");
         const activePath = requestPath.startsWith("system") ? "system" : (requestPath || "standings");
         const links = payload.navigation.map((item) => {
@@ -82,7 +84,7 @@
         const message = document.createElement("div");
         message.className = "navigation-error";
         message.setAttribute("role", "alert");
-        message.textContent = "Navigaci se nepodařilo načíst. Obnovte stránku pomocí Ctrl+F5.";
+        message.textContent = l10n("NavigationError", "Navigaci se nepodařilo načíst. Obnovte stránku pomocí Ctrl+F5.");
         header.append(message);
       }
       console.error("ROBO navigation repair failed", error);
@@ -205,14 +207,14 @@
       const result = row.querySelector('[data-computed="technical-result"]');
       if (penalty) penalty.textContent = Number(payload.penalty) > 0 ? String(payload.penalty) : "—";
       if (result) {
-        result.textContent = payload.complete ? (payload.passed ? "ANO" : "NE") : "?";
+        result.textContent = payload.complete ? (payload.passed ? l10n("Yes", "ANO") : l10n("No", "NE")) : "?";
         result.classList.toggle("result-passed", Boolean(payload.complete && payload.passed));
         result.classList.toggle("result-failed", Boolean(payload.complete && !payload.passed));
       }
       const note = row.querySelector("[data-note-button]");
       if (note && field === "note") {
         note.classList.toggle("has-note", Boolean(payload.has_note));
-        note.textContent = payload.has_note ? "Poznámka ✓" : "Poznámka";
+        note.textContent = payload.has_note ? l10n("NoteSaved", "Poznámka ✓") : l10n("Note", "Poznámka");
       }
     }
     if (panel.dataset.page === "race") {
@@ -221,7 +223,7 @@
         const state = payload.confirmed ? (payload.best_time ? "confirmed" : "invalid") : "pending";
         completion.dataset.state = state;
         completion.textContent = state === "confirmed" ? "✓" : state === "invalid" ? "×" : "?";
-        completion.setAttribute("aria-label", payload.confirmed ? (payload.best_time ? "Výsledek potvrzen" : "Potvrzeno bez platného času") : "Rozpracovaný výsledek");
+        completion.setAttribute("aria-label", payload.confirmed ? (payload.best_time ? l10n("ResultConfirmed", "Výsledek potvrzen") : l10n("ResultInvalid", "Potvrzeno bez platného času")) : l10n("ResultPending", "Rozpracovaný výsledek"));
         row.classList.toggle("row-complete", payload.confirmed);
         if (field === "is_confirmed") row.querySelectorAll(".value-missing[data-empty-value]").forEach((value) => { value.textContent = payload.confirmed ? "" : value.dataset.emptyValue; });
       }
@@ -257,7 +259,7 @@
       const states = ["pending", "pass", "fail"];
       const next = states[(states.indexOf(tri.dataset.state) + 1) % states.length];
       tri.dataset.state = next;
-      tri.setAttribute("aria-label", { pending: "Zatím nevyplněno", pass: "Podmínka splněna", fail: "Podmínka nesplněna" }[next]);
+      tri.setAttribute("aria-label", { pending: l10n("StatePending", "Zatím nevyplněno"), pass: l10n("StatePass", "Podmínka splněna"), fail: l10n("StateFail", "Podmínka nesplněna") }[next]);
       tri.dispatchEvent(new CustomEvent("robo:state-change", { bubbles: true, detail: { value: next } }));
       return;
     }
@@ -274,7 +276,7 @@
       const completed = completion.dataset.state === "pending";
       completion.dataset.state = completed ? "confirmed" : "pending";
       completion.textContent = completed ? "✓" : "?";
-      completion.setAttribute("aria-label", completed ? "Výsledek potvrzen" : "Rozpracovaný výsledek");
+      completion.setAttribute("aria-label", completed ? l10n("ResultConfirmed", "Výsledek potvrzen") : l10n("ResultPending", "Rozpracovaný výsledek"));
       completion.dispatchEvent(new CustomEvent("robo:state-change", { bubbles: true, detail: { value: completed } }));
       return;
     }
@@ -352,8 +354,8 @@
     const now = new Date();
     const date = document.querySelector("[data-current-date]");
     const time = document.querySelector("[data-current-time]");
-    if (date) date.textContent = new Intl.DateTimeFormat("cs-CZ").format(now);
-    if (time) time.textContent = new Intl.DateTimeFormat("cs-CZ", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(now);
+    if (date) date.textContent = new Intl.DateTimeFormat(document.documentElement.lang || "cs").format(now);
+    if (time) time.textContent = new Intl.DateTimeFormat(document.documentElement.lang || "cs", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(now);
   }
   updateClock();
   window.setInterval(updateClock, 1000);

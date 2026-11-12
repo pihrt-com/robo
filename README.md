@@ -66,5 +66,3 @@ Správa systému obsahuje obrazovku Bezpečnost a audit s počty neúspěšných
 ## Historie verzí
 
 Podrobný přehled vydání a oprav je v souboru [CHANGELOG.md](CHANGELOG.md).
-
-

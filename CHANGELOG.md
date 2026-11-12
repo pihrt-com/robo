@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.9 - 2026-11-12
+
+### Changed
+
+- horní pracovní lišta je rozdělena na datum a čas vlevo, jednotně formátovaný souhrn soutěže uprostřed a uživatele, odhlášení a nápovědu vpravo; informační tlačítko se již nemůže zalomit do samostatného řádku.
+
 ## 0.4.8 - 2026-11-12
 
 ### Fixed

@@ -28,6 +28,25 @@
     status.classList.toggle("is-offline", !online);
   }
 
+  function organizeHeader(meta) {
+    if (!meta) return;
+    const clock = meta.querySelector(".current-clock");
+    const summaryItems = [...meta.querySelectorAll("[data-team-count], [data-pending-count], [data-completed-count], [data-connection-status], [data-save-status]")];
+    const actions = [...meta.querySelectorAll(".signed-user, form[action$='/logout'], [data-help-modal='page-help']")];
+    if (!clock || actions.length === 0) return;
+    const summary = summaryItems.length > 0 ? (meta.querySelector(".work-summary-row") || document.createElement("span")) : null;
+    if (summary) {
+      summary.className = "work-summary-row";
+      summary.dataset.workSummary = "";
+      summaryItems.forEach((item) => summary.append(item));
+    }
+    const actionRow = meta.querySelector(".header-actions") || document.createElement("span");
+    actionRow.className = "header-actions";
+    actionRow.dataset.headerActions = "";
+    actions.forEach((item) => actionRow.append(item));
+    meta.replaceChildren(...[clock, summary, actionRow].filter(Boolean));
+  }
+
   function openModal(id) {
     const dialog = document.getElementById(id);
     if (dialog && typeof dialog.showModal === "function") dialog.showModal();
@@ -113,6 +132,7 @@
         navigation.dataset.navigationRepair = "0.4.7";
         if (!existingNavigation) header.append(navigation);
       }
+      organizeHeader(meta);
     } catch (error) {
       if (!header.querySelector(".navigation-error")) {
         const message = document.createElement("div");

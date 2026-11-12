@@ -41,6 +41,7 @@ final class UiContractsTest
         self::assert(str_contains($javascript, 'document.documentElement.lang || "cs"'), 'Client-side date and save-state formatting must follow the selected locale.');
         self::assert(str_contains($javascript, 'header-v047.php?page=${encodeURIComponent(activePath)}'), 'Stale authenticated layouts must repair the complete header through the new endpoint.');
         self::assert(str_contains($javascript, 'const needsHeaderRefresh = true;'), 'Header synchronization must run on every authenticated page load.');
+        self::assert(str_contains($javascript, 'function organizeHeader(meta)'), 'Header metadata must be grouped into stable visual regions.');
         self::assert(str_contains($javascript, 'navigation.dataset.navigationRepair = "0.4.7"'), 'Repaired navigation must expose its client-side version marker.');
         self::assert(str_contains($javascript, 'existingSignedUser.textContent.trim() === ""'), 'An empty user label in a stale layout must be filled from the navigation endpoint.');
         self::assert(str_contains($javascript, 'data-completed-count'), 'The header repair must restore completed-work counters.');
@@ -48,6 +49,8 @@ final class UiContractsTest
         self::assert(str_contains($stylesheet, '.best-time .team-button { color: var(--white); }'), 'The best-time button text must remain white.');
         self::assert(str_contains($stylesheet, '.settings-link { display: flex;'), 'System settings links must be presented as buttons.');
         self::assert(str_contains($stylesheet, '.nav-link { min-width: 148px;'), 'Navigation tabs must use the compact rounded treatment.');
+        self::assert(str_contains($stylesheet, '.work-summary-row { display: inline-flex;'), 'Competition counters must use one centered summary row.');
+        self::assert(str_contains($stylesheet, '.header-actions { justify-self: end;'), 'User controls and help must stay together on the right.');
 
         $standings = self::render('standings', ['rows' => [[
             'team_id' => 3, 'number' => 6, 'school' => 'Škola', 'members' => 'Jméno', 'checkpoint_1' => 6, 'furthest_checkpoint' => 'checkpoint_1', 'best_time' => 1000, 'did_not_stop' => 0, 'technical_penalty' => 0, 'total_time' => 1000, 'rank' => 1,

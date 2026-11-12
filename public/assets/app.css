@@ -22,10 +22,12 @@ button { border-radius: var(--radius); font-weight: 800; cursor: pointer; }
 
 .app-shell { min-height: 100vh; background: var(--page); }
 .app-header { position: sticky; top: 0; z-index: 20; background: var(--header); border-bottom: 1px dashed var(--ink); box-shadow: 0 2px 0 rgba(0,0,0,.1); }
-.meta-row { display: grid; grid-template-columns: auto auto auto auto auto minmax(150px,1fr) auto auto; align-items: center; gap: .55rem; min-height: 34px; padding: .28rem max(1rem, calc((100vw - 1600px) / 2)); font-size: .78rem; }
-.meta-row-static { grid-template-columns: auto 1fr auto auto auto; }
-.current-clock { display: inline-flex; gap: .5rem; }
-[data-current-date], [data-current-time] { font-size: 1.3rem; }
+.meta-row { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; min-height: 42px; padding: .3rem max(1rem, calc((100vw - 1600px) / 2)); font-size: .84rem; }
+.meta-row-static { grid-template-columns: minmax(0, 1fr) auto; }
+.current-clock { justify-self: start; display: inline-flex; gap: .45rem; font-size: .98rem; }
+[data-current-date], [data-current-time] { font-size: inherit; }
+.work-summary-row { display: inline-flex; align-items: center; justify-content: center; gap: .7rem; min-width: 0; white-space: nowrap; font-size: .84rem; font-weight: 700; }
+.header-actions { justify-self: end; display: inline-flex; align-items: center; gap: .45rem; white-space: nowrap; }
 .brand-row { display: grid; grid-template-columns: max-content minmax(0, 1fr) max-content; align-items: center; column-gap: .75rem; min-height: 48px; padding: 0 max(1rem, calc((100vw - 1600px) / 2)); }
 .brand { color: var(--orange); font-weight: 800; font-size: 1.3rem; text-decoration: none; }
 .page-title { min-width: 0; overflow: hidden; color: var(--orange); font-size: clamp(1.05rem, 2.15vw, 1.45rem); font-weight: 800; text-align: center; text-overflow: ellipsis; white-space: nowrap; margin: 0; }
@@ -163,8 +165,8 @@ dialog::backdrop { background: rgba(0,0,0,.55); }
 .modal-footer { display: flex; justify-content: flex-end; gap: .5rem; padding: .75rem 1rem; background: var(--page); }
 
 @media (max-width: 900px) {
-  .meta-row { grid-template-columns: repeat(2, auto) 1fr auto; }
-  .meta-row .meta-optional { display: none; }
+  .meta-row { grid-template-columns: minmax(0, 1fr) auto; min-height: 38px; }
+  .work-summary-row { display: none; }
   .brand-row { grid-template-columns: minmax(0, 1fr) max-content; row-gap: .15rem; min-height: auto; padding-block: .35rem; }
   .brand { grid-column: 1; }
   .page-title { grid-column: 1 / -1; grid-row: 2; padding-bottom: .2rem; }

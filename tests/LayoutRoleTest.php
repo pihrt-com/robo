@@ -17,7 +17,7 @@ final class LayoutRoleTest
         self::assert(str_contains($admin, 'href="/robo/system"'), 'Administrator must see system navigation.');
         self::assert(str_contains($admin, '<nav class="nav-row" aria-label="Hlavní navigace">'), 'Administrator must receive the visible navigation bar.');
         self::assert(substr_count($admin, 'class="nav-link"') === 5, 'Administrator must receive all five navigation buttons.');
-        self::assert(str_contains($admin, 'data-layout-version="0.4.7"'), 'Authenticated pages must use the new uncached layout file.');
+        self::assert(str_contains($admin, 'data-layout-version="0.6.0"'), 'Authenticated pages must expose the current compact layout version.');
         self::assert(str_contains($admin, '/robo/assets/app.css?v='), 'Static assets must be cache-busted after an update.');
         self::assert(!str_contains($admin, 'Týmů 16'), 'System page must not show work counters.');
         self::assert(str_contains($admin, 'Opravdu se chcete odhlásit?'), 'Logout must require confirmation.');
@@ -36,7 +36,7 @@ final class LayoutRoleTest
         self::assert(str_contains($technicalFallback, 'href="/robo/technical"'), 'Technical fallback must retain technical navigation.');
         self::assert(!str_contains($technicalFallback, 'href="/robo/system"'), 'Technical fallback must not show system navigation.');
 
-        foreach (['admin', 'race', 'settings-competition', 'settings-log', 'settings-penalties', 'settings-texts', 'settings-users', 'standings', 'teams', 'teams-import-preview', 'technical'] as $viewName) {
+        foreach (['admin', 'race', 'settings-api', 'settings-competition', 'settings-log', 'settings-penalties', 'settings-texts', 'settings-users', 'standings', 'teams', 'teams-import-preview', 'technical'] as $viewName) {
             $source = (string) file_get_contents(dirname(__DIR__) . '/views/' . $viewName . '.php');
             self::assert(str_contains($source, "app-shell-v047.php"), 'Authenticated view ' . $viewName . ' must bypass the stale layout opcode.');
         }

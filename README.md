@@ -20,6 +20,8 @@ ROBO je samostatná webová aplikace pro řízení robotické soutěže od pří
 - Divák má přístup k průběžnému pořadí bez možnosti měnit data.
 - Záhlaví zobrazuje přihlášené jméno, roli a jen ty položky navigace, které odpovídají oprávnění účtu.
 
+Pracovní souhrn v záhlaví technické kontroly počítá všechny týmy. Na každé dráze naopak počítá pouze týmy přiřazené dané dráze, takže například při osmi týmech ukazuje technikovi `Hotovo: 4` z celkových čtyř řádků. Na systémových stránkách a v pořadí se pracovní čítače nezobrazují. Na telefonu na šířku se značka a název stránky skládají do jednoho kompaktního řádku a navigace používá menší ovládací prvky.
+
 ## Průběh soutěže
 
 Technická kontrola používá tři tří stavová pole: nevyplněno, splněno a nesplněno. Jakmile je některá podmínka nesplněna, aplikace použije nastavenou technickou penalizaci. Poznámku lze uložit samostatně a její přítomnost je viditelná v řádku týmu.
@@ -41,6 +43,8 @@ Správce nastavuje aktivní ročník, datum soutěže, jazyk a počet týmů. Sa
 ## Exporty a Playoff
 
 Celkové pořadí lze exportovat do XLSX pro další zpracování. Export pro Playoff vytváří list `Pojmenování týmů` se sloupci `ID týmu`, `Škola / adresa školy`, `Jméno soutěžícího` a `Nejlepší čas jízdy`; oba soutěžící jsou uloženi v jednom textovém poli a čas používá formát `MM:SS:MMM`.
+
+Správce může na stránce **Systém → API pro Playoff** vytvořit dlouhý náhodný klíč. Endpoint `/robo/api/v1` potom vrací JSON aktivního ročníku s poli `team_number`, `rank`, `best_time_ms`, `best_time`, `school` a `contestants`. Klíč lze předat v dotazu `/robo/api/v1?key=VÁŠ_KLÍČ` nebo doporučenou hlavičkou `Authorization: Bearer VÁŠ_KLÍČ`. V databázi se ukládá pouze SHA-256 otisk; celý klíč se zobrazí jen jednou a nový klíč okamžitě zneplatní předchozí.
 
 ## Instalace
 

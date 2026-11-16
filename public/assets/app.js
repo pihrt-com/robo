@@ -17,7 +17,17 @@
 
   function setPendingCount(value) {
     const pending = document.querySelector("[data-pending-count]");
-    if (pending && Number.isInteger(value) && value >= 0) pending.textContent = format(l10n("Pending", "Zbývá dokončit: {count}"), { count: value });
+    if (!pending || !Number.isInteger(value) || value < 0) return;
+    pending.dataset.count = String(value);
+    pending.textContent = format(l10n("Pending", "Zbývá dokončit: {count}"), { count: value });
+    const teams = document.querySelector("[data-team-count]");
+    const completed = document.querySelector("[data-completed-count]");
+    const teamCount = Number(teams?.dataset.count);
+    if (completed && Number.isInteger(teamCount) && teamCount >= 0) {
+      const completedCount = Math.max(0, teamCount - value);
+      completed.dataset.count = String(completedCount);
+      completed.textContent = format(l10n("Completed", "Hotovo: {count}"), { count: completedCount });
+    }
   }
 
   function setConnectionStatus(online = navigator.onLine) {
@@ -81,7 +91,7 @@
       if (needsHeaderRefresh) {
         const brand = header.querySelector(".brand");
         if (brand && payload.brand) brand.textContent = String(payload.brand);
-        header.dataset.layoutVersion = "0.4.7";
+        header.dataset.layoutVersion = "0.6.0";
         if (meta && payload.summary) {
           meta.classList.remove("meta-row-static");
           const insertSummary = (selector, className, value) => {
@@ -94,14 +104,24 @@
             item.textContent = String(value || "");
             return item;
           };
-          insertSummary("[data-team-count]", "work-summary", payload.summary.teams).dataset.teamCount = "";
-          insertSummary("[data-pending-count]", "meta-optional", payload.summary.pending).dataset.pendingCount = "";
-          insertSummary("[data-completed-count]", "meta-optional", payload.summary.completed).dataset.completedCount = "";
+          const teamCount = insertSummary("[data-team-count]", "work-summary", payload.summary.teams);
+          teamCount.dataset.teamCount = "";
+          teamCount.dataset.count = String(payload.summary.counts?.teams ?? "");
+          const pendingCount = insertSummary("[data-pending-count]", "meta-optional", payload.summary.pending);
+          pendingCount.dataset.pendingCount = "";
+          pendingCount.dataset.count = String(payload.summary.counts?.pending ?? "");
+          const completedCount = insertSummary("[data-completed-count]", "meta-optional", payload.summary.completed);
+          completedCount.dataset.completedCount = "";
+          completedCount.dataset.count = String(payload.summary.counts?.completed ?? "");
           const connection = insertSummary("[data-connection-status]", "meta-optional connection-status", payload.summary.connection);
           connection.dataset.connectionStatus = "";
           const save = insertSummary("[data-save-status]", "meta-optional", payload.summary.save);
           save.dataset.saveStatus = "";
           setConnectionStatus();
+        } else if (meta) {
+          meta.classList.add("meta-row-static");
+          meta.querySelector("[data-work-summary]")?.remove();
+          meta.querySelectorAll("[data-team-count], [data-pending-count], [data-completed-count], [data-connection-status], [data-save-status]").forEach((item) => item.remove());
         }
       }
       if (needsUser) {
@@ -129,7 +149,7 @@
           return link;
         });
         navigation.replaceChildren(...links);
-        navigation.dataset.navigationRepair = "0.4.7";
+        navigation.dataset.navigationRepair = "0.6.0";
         if (!existingNavigation) header.append(navigation);
       }
       organizeHeader(meta);
@@ -219,6 +239,7 @@
       ["penalties", "Penalizace soutěže"],
       ["teams", "Jména soutěžících a škol"],
       ["users", "Uživatelé a role"],
+      ["api", "API pro Playoff"],
       ["log", "Záznamy systému"],
     ]);
     document.querySelectorAll(".settings-list a").forEach((link) => {

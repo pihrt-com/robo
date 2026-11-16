@@ -42,7 +42,7 @@ final class UiContractsTest
         self::assert(str_contains($javascript, 'header-v047.php?page=${encodeURIComponent(activePath)}'), 'Stale authenticated layouts must repair the complete header through the new endpoint.');
         self::assert(str_contains($javascript, 'const needsHeaderRefresh = true;'), 'Header synchronization must run on every authenticated page load.');
         self::assert(str_contains($javascript, 'function organizeHeader(meta)'), 'Header metadata must be grouped into stable visual regions.');
-        self::assert(str_contains($javascript, 'navigation.dataset.navigationRepair = "0.4.7"'), 'Repaired navigation must expose its client-side version marker.');
+        self::assert(str_contains($javascript, 'navigation.dataset.navigationRepair = "0.6.0"'), 'Repaired navigation must expose its client-side version marker.');
         self::assert(str_contains($javascript, 'existingSignedUser.textContent.trim() === ""'), 'An empty user label in a stale layout must be filled from the navigation endpoint.');
         self::assert(str_contains($javascript, 'data-completed-count'), 'The header repair must restore completed-work counters.');
         self::assert(str_contains($javascript, 'repairSystemHome();'), 'The cached system home must receive the redesigned settings buttons.');
@@ -51,12 +51,15 @@ final class UiContractsTest
         self::assert(str_contains($stylesheet, '.nav-link { min-width: 148px;'), 'Navigation tabs must use the compact rounded treatment.');
         self::assert(str_contains($stylesheet, '.work-summary-row { display: inline-flex;'), 'Competition counters must use one centered summary row.');
         self::assert(str_contains($stylesheet, '.header-actions { justify-self: end;'), 'User controls and help must stay together on the right.');
+        self::assert(str_contains($stylesheet, '@media (max-width: 900px) and (orientation: landscape)') && str_contains($stylesheet, '.page-title { grid-column: 2; grid-row: 1;'), 'Landscape phones must use the compact single-line brand and title layout.');
         $security = self::render('settings-security', ['overview' => ['failed_logins'=>1, 'blocked_logins'=>2, 'csrf_rejections'=>3, 'expired_sessions'=>4, 'recent'=>[]], 'blocks' => [], 'base' => '/robo']);
         self::assert(str_contains($security, 'Stav ochrany za posledních 24 hodin') && str_contains($security, 'Odmítnuté CSRF požadavky'), 'Security dashboard must display current audit metrics.');
         $competitionSettings = self::render('settings-competition', ['activeCompetition' => ['id'=>1,'competition_year'=>2027,'competition_date'=>'2027-01-01','locale'=>'en','team_count'=>8], 'competitions' => [['id'=>1,'competition_year'=>2027,'competition_date'=>'2027-01-01','locale'=>'en','team_count'=>8,'is_active'=>1], ['id'=>2,'competition_year'=>2026,'competition_date'=>'2026-01-01','locale'=>'cs','team_count'=>8,'is_active'=>0]], 'base'=>'/robo']);
         self::assert(str_contains($competitionSettings, '/system/competition/delete') && str_contains($competitionSettings, 'Aktivní ročník nelze smazat.'), 'Only historical competitions must expose deletion controls.');
         $auditLog = self::render('settings-log', ['search'=>'', 'audit'=>['rows'=>[['id'=>1, 'created_at'=>'2026-11-12 12:00:00', 'username'=>'admin', 'user_id'=>1, 'competition_id'=>1, 'event_type'=>'system.test', 'message'=>'Test', 'context_json'=>'{}', 'ip_address'=>'127.0.0.1']], 'total'=>1, 'page'=>1, 'per_page'=>100], 'base'=>'/robo']);
         self::assert(str_contains($auditLog, '/system/log/delete') && str_contains($auditLog, 'SMAZAT LOGY'), 'Audit log must expose individual and explicitly confirmed bulk deletion.');
+        $apiSettings = self::render('settings-api', ['apiStatus'=>['enabled'=>true,'created_at'=>'2026-11-16T12:00:00Z'], 'newToken'=>'abcdefghijklmnopqrstuvwxyzABCDEFGH123456789', 'base'=>'/robo']);
+        self::assert(str_contains($apiSettings, '/api/v1?key=') && str_contains($apiSettings, '/system/api/revoke') && str_contains($apiSettings, 'Authorization: Bearer'), 'API settings must show the one-time key URL, Bearer alternative and revocation control.');
 
         $standings = self::render('standings', ['rows' => [[
             'team_id' => 3, 'number' => 6, 'school' => 'Škola', 'members' => 'Jméno', 'checkpoint_1' => 6, 'furthest_checkpoint' => 'checkpoint_1', 'best_time' => 1000, 'did_not_stop' => 0, 'technical_penalty' => 0, 'total_time' => 1000, 'rank' => 1,

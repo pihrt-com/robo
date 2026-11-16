@@ -155,6 +155,14 @@ button { border-radius: var(--radius); font-weight: 800; cursor: pointer; }
 .log-message { min-width: 330px; text-align: left !important; }
 .log-message details { margin-top: .35rem; }
 .log-message pre { max-width: 620px; overflow: auto; margin: .35rem 0 0; padding: .5rem; border-radius: var(--radius); background: #f0f2f4; white-space: pre-wrap; word-break: break-word; }
+.api-settings { max-width: 980px; margin-inline: auto; }
+.api-key-card { margin: 1rem 0; padding: 1rem; border: var(--line); border-radius: var(--radius); background: #fff6d4; }
+.api-key-card h3 { margin-top: 0; }
+.api-key-output { font-family: Consolas, "Courier New", monospace; font-size: .86rem; }
+.api-status { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin: 1rem 0; }
+.api-status div { padding: .75rem; border: var(--line); border-radius: var(--radius); background: var(--white); }
+.api-status dt { color: #555; font-size: .78rem; font-weight: 800; text-transform: uppercase; }
+.api-status dd { margin: .2rem 0 0; font-weight: 800; }
 
 .display-page { min-height: 100vh; padding: clamp(1rem, 3vw, 3.5rem); background: var(--page); }
 .public-header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 1rem; margin-bottom: clamp(1rem, 3vw, 2.5rem); }
@@ -201,4 +209,19 @@ dialog::backdrop { background: rgba(0,0,0,.55); }
   .settings-list { grid-template-columns: 1fr; }
   .security-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .login-page { padding: .75rem; }
+  .api-status { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 900px) and (orientation: landscape), (max-height: 520px) and (min-width: 621px) {
+  .meta-row { min-height: 32px; padding: .15rem .65rem; font-size: .7rem; }
+  .current-clock { gap: .3rem; font-size: .78rem; }
+  .signed-user small { display: none; }
+  .header-actions { gap: .3rem; }
+  .header-actions .button-small { min-height: 1.9rem; padding: .25rem .55rem; font-size: .68rem; }
+  .icon-button { width: 2rem; height: 2rem; font-size: 1.5rem; }
+  .brand-row { grid-template-columns: max-content minmax(0, 1fr); min-height: 34px; padding: .15rem .65rem; column-gap: .65rem; }
+  .brand { grid-column: 1; grid-row: 1; font-size: .95rem; }
+  .page-title { grid-column: 2; grid-row: 1; padding: 0; font-size: 1rem; text-align: right; }
+  .nav-row { gap: .3rem; padding: .15rem .5rem .25rem; }
+  .nav-link { min-width: 112px; padding: .35rem .5rem; font-size: .76rem; }
 }

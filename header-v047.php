@@ -51,6 +51,9 @@ try {
         $pendingQuery->execute(['competition_id' => $competition['id']]);
         $pending = (int) $pendingQuery->fetchColumn();
     } elseif (preg_match('/^track-([12])$/', $page, $track) === 1) {
+        $trackTeamCount = $pdo->prepare('SELECT COUNT(*) FROM teams WHERE competition_id=:competition_id AND MOD(team_number,2)=:parity');
+        $trackTeamCount->execute(['competition_id' => $competition['id'], 'parity' => (int) $track[1] % 2]);
+        $teams = (int) $trackTeamCount->fetchColumn();
         $pendingQuery = $pdo->prepare('SELECT COUNT(*) FROM teams t LEFT JOIN rides r ON r.team_id=t.id AND r.competition_id=t.competition_id WHERE t.competition_id=:competition_id AND MOD(t.team_number,2)=:parity AND (r.id IS NULL OR r.is_confirmed=0)');
         $pendingQuery->execute(['competition_id' => $competition['id'], 'parity' => (int) $track[1] % 2]);
         $pending = (int) $pendingQuery->fetchColumn();
@@ -60,9 +63,10 @@ try {
         $permissions = [];
     }
     $roleLabel = (string) $user[$locale === 'cs' ? 'label_cs' : 'label_en'];
-    $summary = $locale === 'en'
-        ? ['teams' => 'Teams: '.$teams, 'pending' => 'Remaining: '.$pending, 'completed' => 'Completed: '.max(0, $teams - $pending), 'connection' => 'Connection: online', 'save' => 'Waiting for changes']
-        : ['teams' => 'Týmů: '.$teams, 'pending' => 'Zbývá dokončit: '.$pending, 'completed' => 'Hotovo: '.max(0, $teams - $pending), 'connection' => 'Spojení: online', 'save' => 'Čeká na změnu'];
+    $workPage = $page === 'technical' || preg_match('/^track-[12]$/', $page) === 1;
+    $summary = !$workPage ? null : ($locale === 'en'
+        ? ['teams' => 'Teams: '.$teams, 'pending' => 'Remaining: '.$pending, 'completed' => 'Completed: '.max(0, $teams - $pending), 'connection' => 'Connection: online', 'save' => 'Waiting for changes', 'counts' => ['teams' => $teams, 'pending' => $pending, 'completed' => max(0, $teams - $pending)]]
+        : ['teams' => 'Týmů: '.$teams, 'pending' => 'Zbývá dokončit: '.$pending, 'completed' => 'Hotovo: '.max(0, $teams - $pending), 'connection' => 'Spojení: online', 'save' => 'Čeká na změnu', 'counts' => ['teams' => $teams, 'pending' => $pending, 'completed' => max(0, $teams - $pending)]]);
     echo json_encode([
         'username' => (string) $user['username'],
         'role' => $roleLabel,

@@ -6,6 +6,7 @@ namespace Robo\Tests;
 use Robo\Domain\PageTextCatalog;
 use Robo\Domain\NavigationMenu;
 use Robo\Security\Authorization;
+use Robo\Security\ApiTokenService;
 
 final class BackendContractsTest
 {
@@ -19,6 +20,7 @@ final class BackendContractsTest
         self::assert(Authorization::allows('track_1', ['track_1.view', 'track_1.edit'], 'track_1.edit'), 'Track editor permission must work.');
         self::assert(!Authorization::allows('viewer', ['results.view'], 'technical.edit'), 'Viewer must not edit technical inspection.');
         self::assert(!Authorization::allows('guest', ['results.view'], 'track_2.edit'), 'Guest must not edit rides.');
+        self::assert(strlen(ApiTokenService::hash('test-token')) === 64 && ApiTokenService::hash('test-token') !== 'test-token', 'API tokens must be stored only as SHA-256 hashes.');
         self::assert(count(NavigationMenu::items('administrator', [], [])) === 5, 'Administrator navigation repair must expose all five destinations.');
         $technicalMenu = NavigationMenu::items('technical_inspection', ['technical.view'], ['technical' => 'Přejímka']);
         self::assert($technicalMenu === [['path' => 'technical', 'label' => 'Přejímka']], 'Navigation repair must keep role permissions and stored labels.');
@@ -29,6 +31,13 @@ final class BackendContractsTest
         self::assert(str_contains($headerEndpoint, 'Session::userId()'), 'Header repair endpoint must require the signed-in session.');
         self::assert(str_contains($headerEndpoint, "header('Cache-Control: no-store')"), 'Header repair endpoint must not be cached.');
         self::assert(str_contains($headerEndpoint, "'brand' => 'ROBO '"), 'Header repair endpoint must return the localized ROBO locale marker.');
+        self::assert(str_contains($headerEndpoint, 'MOD(team_number,2)=:parity'), 'Track header totals must count only teams assigned to the selected track.');
+        self::assert(str_contains($headerEndpoint, '$summary = !$workPage ? null'), 'Non-work pages must not receive technical or track counters.');
+        $apiTokenService = (string) file_get_contents(dirname(__DIR__) . '/app/Security/ApiTokenService.php');
+        self::assert(str_contains($apiTokenService, 'random_bytes(32)') && str_contains($apiTokenService, 'hash_equals'), 'Playoff API keys must be long random tokens verified with a timing-safe comparison.');
+        $frontController = (string) file_get_contents(dirname(__DIR__) . '/index.php');
+        self::assert(str_contains($frontController, "\$route==='api/v1'") && str_contains($frontController, "'team_number'") && str_contains($frontController, "'contestants'"), 'Versioned Playoff API must expose the requested team data fields.');
+        self::assert(strpos($frontController, "\$route==='api/v1'") < strpos($frontController, 'Session::start($config'), 'Playoff API downloads must not create an interactive browser session.');
         $session = (string) file_get_contents(dirname(__DIR__) . '/app/Core/Session.php');
         self::assert(str_contains($session, 'IDLE_TIMEOUT_SECONDS = 28800'), 'Sessions must expire after the configured inactivity period.');
         self::assert(str_contains($session, "ini_set('session.use_strict_mode', '1')"), 'Sessions must reject uninitialized identifiers.');

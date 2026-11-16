@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.6.0 - 2026-11-16
+
+### Added
+
+- správa systému obsahuje stránku API pro Playoff, kde správce vytvoří nebo zruší dlouhý náhodný přístupový klíč; celý klíč se zobrazí pouze jednou a v databázi zůstává jen jeho SHA-256 otisk.
+- endpoint `/robo/api/v1` po ověření klíče stáhne JSON aktivního ročníku s číslem týmu, pořadím, nejlepším časem, školou a soutěžícími; podporuje přímý parametr `key` i hlavičku `Authorization: Bearer`.
+
+### Changed
+
+- horní panel na telefonu na šířku používá kompaktní rozložení, ve kterém jsou značka ROBO a název stránky v jednom řádku a navigace zabírá méně výšky.
+- pracovní souhrn se zobrazuje pouze na technické kontrole a drahách; systémové stránky ani celkové pořadí už nepřebírají čítače z opravného endpointu hlavičky.
+
+### Fixed
+
+- každá dráha počítá týmy, zbývající záznamy a dokončené záznamy pouze ze svých řádků, takže při osmi týmech správně zobrazuje celkem čtyři týmy a stav `Hotovo: 4` místo `Hotovo: 8`.
+- po potvrzení nebo znovuotevření jízdy se spolu s počtem zbývajících týmů okamžitě přepočítá také hodnota `Hotovo`.
+
 ## 0.5.4 - 2026-11-12
 
 ### Fixed

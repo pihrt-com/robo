@@ -44,7 +44,7 @@ Správce nastavuje aktivní ročník, datum soutěže, jazyk a počet týmů. Sa
 
 Celkové pořadí lze exportovat do XLSX pro další zpracování. Export pro Playoff vytváří list `Pojmenování týmů` se sloupci `ID týmu`, `Škola / adresa školy`, `Jméno soutěžícího` a `Nejlepší čas jízdy`; oba soutěžící jsou uloženi v jednom textovém poli a čas používá formát `MM:SS:MMM`.
 
-Správce může na stránce **Systém → API pro Playoff** vytvořit dlouhý náhodný klíč. Endpoint `/robo/api/v1` potom vrací JSON aktivního ročníku s poli `team_number`, `rank`, `best_time_ms`, `best_time`, `school` a `contestants`. Klíč lze předat v dotazu `/robo/api/v1?key=VÁŠ_KLÍČ` nebo doporučenou hlavičkou `Authorization: Bearer VÁŠ_KLÍČ`. V databázi se ukládá pouze SHA-256 otisk; celý klíč se zobrazí jen jednou a nový klíč okamžitě zneplatní předchozí.
+Správce může na stránce **Systém → API pro Playoff** vytvořit dlouhý náhodný klíč nebo aktivní klíč znovu zobrazit. Klíč se v databázi ověřuje SHA-256 otiskem a pro zobrazení správci je uložen šifrovaně pomocí místního tajemství instalace. Endpoint `/robo/api/v1` vrací JSON aktivního ročníku s poli `team_number`, `rank`, `best_time_ms`, `best_time`, `school` a `contestants`; přidaný příznak `best_time_includes_penalties` určuje, zda zvolený nejlepší čas zahrnuje penalizace. Správce může volit nejlepší čas včetně penalizací nebo pouze čas jízdy, zatímco pořadí týmů vždy vychází z výsledného času včetně penalizací. Klíč lze předat v dotazu `/robo/api/v1?key=VÁŠ_KLÍČ` nebo doporučenou hlavičkou `Authorization: Bearer VÁŠ_KLÍČ`. Nový klíč okamžitě zneplatní předchozí.
 
 ## Instalace
 
@@ -65,7 +65,11 @@ Správce může ověřit nejnovější veřejné vydání na GitHubu a nainstalo
 
 Každý zápis vyžaduje platnou relaci, oprávnění role a CSRF token. Hesla jsou ukládána přes `password_hash`, cookies relace jsou HTTP-only a SameSite Strict a při HTTPS používají příznak Secure. Relace skončí po osmi hodinách nečinnosti a její identifikátor se pravidelně obnovuje. Přihlášení omezuje opakované neúspěšné pokusy z jedné IP adresy.
 
-Správa systému obsahuje obrazovku Bezpečnost a audit s počty neúspěšných a blokovaných přihlášení, odmítnutých CSRF požadavků a ukončených relací za posledních 24 hodin, seznamem aktivních blokací a posledními bezpečnostními událostmi. Úplný auditní log zachovává uživatele, ročník, čas, IP adresu, druh události a podrobnosti každé soutěžní či správcovské změny. Správce může odstranit jednotlivý záznam nebo celý log po opsání potvrzovacího textu; po hromadném vymazání zůstane záznam o této akci.
+Správa systému obsahuje obrazovku Bezpečnost a audit s počty neúspěšných a blokovaných přihlášení, odmítnutých CSRF požadavků a ukončených relací za posledních 24 hodin, seznamem aktivních blokací a posledními bezpečnostními událostmi. Úplný auditní log zachovává uživatele, ročník, čas, IP adresu, druh události a podrobnosti každé soutěžní či správcovské změny. Správce může odstranit jednotlivý záznam nebo celý log po opsání potvrzovacího textu; hromadné vymazání odstraní všechny záznamy i jejich ID a další záznam začne ID 1.
+
+## Vývoj
+
+Dne 18. 11. 2026 byla v pracovním stromu GitHubu `C:\Users\marti\OneDrive\Dokumenty\GitHub\robo` doplněna volba času pro API Playoff, opakované zobrazení šifrovaně uloženého API klíče, čitelný čas jeho vytvoření a reset ID při vymazání auditního logu.
 
 ## Historie verzí
 

@@ -34,9 +34,9 @@ final class BackendContractsTest
         self::assert(str_contains($headerEndpoint, 'MOD(team_number,2)=:parity'), 'Track header totals must count only teams assigned to the selected track.');
         self::assert(str_contains($headerEndpoint, '$summary = !$workPage ? null'), 'Non-work pages must not receive technical or track counters.');
         $apiTokenService = (string) file_get_contents(dirname(__DIR__) . '/app/Security/ApiTokenService.php');
-        self::assert(str_contains($apiTokenService, 'random_bytes(32)') && str_contains($apiTokenService, 'hash_equals'), 'Playoff API keys must be long random tokens verified with a timing-safe comparison.');
+        self::assert(str_contains($apiTokenService, 'random_bytes(32)') && str_contains($apiTokenService, 'hash_equals') && str_contains($apiTokenService, 'aes-256-gcm') && str_contains($apiTokenService, 'function reveal'), 'Playoff API keys must be long random tokens, be encrypted for an administrator reveal and use timing-safe verification.');
         $frontController = (string) file_get_contents(dirname(__DIR__) . '/index.php');
-        self::assert(str_contains($frontController, "\$route==='api/v1'") && str_contains($frontController, "'team_number'") && str_contains($frontController, "'contestants'"), 'Versioned Playoff API must expose the requested team data fields.');
+        self::assert(str_contains($frontController, "\$route==='api/v1'") && str_contains($frontController, "'team_number'") && str_contains($frontController, "'contestants'") && str_contains($frontController, "'best_time_includes_penalties'"), 'Versioned Playoff API must expose the requested team data fields and time-mode metadata.');
         self::assert(strpos($frontController, "\$route==='api/v1'") < strpos($frontController, 'Session::start($config'), 'Playoff API downloads must not create an interactive browser session.');
         $session = (string) file_get_contents(dirname(__DIR__) . '/app/Core/Session.php');
         self::assert(str_contains($session, 'IDLE_TIMEOUT_SECONDS = 28800'), 'Sessions must expire after the configured inactivity period.');
@@ -44,7 +44,7 @@ final class BackendContractsTest
         $adminService = (string) file_get_contents(dirname(__DIR__) . '/app/Domain/AdminService.php');
         self::assert(str_contains($adminService, 'function deleteCompetition'), 'Historical competitions must have a protected delete operation.');
         self::assert(str_contains($adminService, 'Aktivní ročník nelze smazat'), 'The active competition must remain protected from deletion.');
-        self::assert(str_contains($adminService, 'function clearAudit'), 'Administrators must be able to clear audit records with an explicit workflow.');
+        self::assert(str_contains($adminService, 'function clearAudit') && str_contains($adminService, 'ALTER TABLE audit_log AUTO_INCREMENT = 1'), 'Administrators must be able to clear audit records and reset their IDs.');
         $rewriteRules = (string) file_get_contents(dirname(__DIR__) . '/.htaccess');
         self::assert(str_contains($rewriteRules, 'RewriteRule ^public/?$ index.php [L,QSA]'), 'Public standings must be routed before Apache treats the public asset directory as a directory listing.');
     }

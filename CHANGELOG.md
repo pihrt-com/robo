@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.1 - 2026-11-18
+
+### Added
+
+- stránka API pro Playoff umožňuje zvolit, zda JSON vrací nejlepší čas včetně penalizací, nebo pouze čas jízdy; JSON uvádí také příznak zvoleného režimu.
+- aktivní API klíč lze po přihlášení správce znovu zobrazit; pro tento účel je šifrovaně uložený místním tajemstvím instalace a ověřuje se jeho SHA-256 otiskem.
+
+### Changed
+
+- datum vytvoření API klíče se zobrazuje ve formátu data a času pro české prostředí.
+- hromadné vymazání auditního logu odstraní všechny záznamy a resetuje číslování; další událost získá ID 1.
+
 ## 0.6.0 - 2026-11-16
 
 ### Added

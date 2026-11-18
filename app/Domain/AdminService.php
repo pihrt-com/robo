@@ -305,19 +305,10 @@ final class AdminService
 
     public function clearAudit(int $userId, string $ip): int
     {
-        $this->pdo->beginTransaction();
-        try {
         $count = (int) $this->pdo->query('SELECT COUNT(*) FROM audit_log')->fetchColumn();
         $this->pdo->exec('DELETE FROM audit_log');
-        $this->audit->log($userId, null, 'system.audit_cleared', 'Auditní log byl vymazán.', ['deleted_count' => $count], $ip);
-        $this->pdo->commit();
+        $this->pdo->exec('ALTER TABLE audit_log AUTO_INCREMENT = 1');
         return $count;
-        } catch (\Throwable $exception) {
-            if ($this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
-            }
-            throw $exception;
-        }
     }
 
     /** @return array{failed_logins:int,blocked_logins:int,csrf_rejections:int,expired_sessions:int,recent:list<array<string,mixed>>} */
